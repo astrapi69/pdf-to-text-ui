@@ -1,7 +1,0 @@
-[Desktop Entry]
-Type=Application
-Name=swing-app-ui-template
-GenericName=Crypto-Tool
-Comment=application that provides public and private key creation
-Exec=sh -c 'java -jar --add-opens java.base/java.time=ALL-UNNAMED ~/apps/mystic-crypt-ui/swing-app-ui-template.jar'
-Icon=~/apps/swing-app-ui-template/img/icon.png

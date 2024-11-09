@@ -1,0 +1,7 @@
+[Desktop Entry]
+Type=Application
+Name=pdf-to-text-ui
+GenericName=Crypto-Tool
+Comment=application that provides public and private key creation
+Exec=sh -c 'java -jar --add-opens java.base/java.time=ALL-UNNAMED ~/apps/mystic-crypt-ui/pdf-to-text-ui.jar'
+Icon=~/apps/pdf-to-text-ui/img/icon.png
