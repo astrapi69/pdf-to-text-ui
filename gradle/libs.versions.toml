@@ -1,7 +1,8 @@
 [versions]
 awt-extensions-version = "2.0"
 commons-text-version = "1.12.0"
-file-worker-version = "18.1"
+easy-logger-version = "1.1"
+file-worker-version = "19.0"
 gradle-migration-data-version = "3.0"
 gradle-plugin-grgit-version = "5.3.0"
 gradle-plugin-izpack-version = "3.2"
@@ -20,6 +21,7 @@ meanbean-version = "3.0.0-M9"
 menu-action-version = "4.1"
 mockito-core-version = "5.14.2"
 model-data-version = "3.1"
+pdf-to-text-extensions-version = "1.1"
 pf4j-version = "3.12.1"
 resourcebundle-core-version = "6.0"
 silly-collection-version = "28.1"
@@ -31,6 +33,7 @@ throwable-version = "3"
 [libraries]
 awt-extensions = { module = "io.github.astrapi69:awt-extensions", version.ref = "awt-extensions-version" }
 commons-text = { module = "org.apache.commons:commons-text", version.ref = "commons-text-version" }
+easy-logger = { module = "io.github.astrapi69:easy-logger", version.ref = "easy-logger-version" }
 file-worker = { module = "io.github.astrapi69:file-worker", version.ref = "file-worker-version" }
 gradle-migration-data = { module = "io.github.astrapi69:gradle-migration-data", version.ref = "gradle-migration-data-version" }
 izpack-ant = { module = "org.codehaus.izpack:izpack-ant", version.ref = "izpack-ant-version" }
@@ -45,6 +48,7 @@ menu-action = { module = "io.github.astrapi69:menu-action", version.ref = "menu-
 mockito-core = { module = "org.mockito:mockito-core", version.ref = "mockito-core-version" }
 mockito-junit-jupiter = { module = "org.mockito:mockito-junit-jupiter", version.ref = "mockito-core-version" }
 model-data = { module = "io.github.astrapi69:model-data", version.ref = "model-data-version" }
+pdf-to-text-extensions = { module = "io.github.astrapi69:pdf-to-text-extensions", version.ref = "pdf-to-text-extensions-version" }
 pf4j = { module = "org.pf4j:pf4j", version.ref = "pf4j-version" }
 resourcebundle-core = { module = "io.github.astrapi69:resourcebundle-core", version.ref = "resourcebundle-core-version" }
 silly-collection = { module = "io.github.astrapi69:silly-collection", version.ref = "silly-collection-version" }
@@ -65,8 +69,10 @@ compile-only = [
 # Bundle of the core dependencies
 core-dependencies = [
     "awt-extensions",
+    "file-worker",
     "menu-action",
     "model-data",
+    "pdf-to-text-extensions",
     "pf4j",
     "resourcebundle-core",
     "swing-base-components",
@@ -77,6 +83,7 @@ izpack = [
 ]
 # Bundle of the logging dependencies
 logging = [
+    "easy-logger",
     "jul-to-slf4j",
     "logback-classic",
     "slf4j-api",
@@ -96,7 +103,6 @@ test-runtime-only = [
 # Dependencies required for unit testing, including assertions, mocking, and parameterized tests
 unit-testing = [
     "commons-text",
-    "file-worker",
     "gradle-migration-data",
     "junit-jupiter",
     "junit-jupiter-params",

@@ -18,16 +18,18 @@
  * DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-module swing.app.ui.template.main
+module io.github.astrapisixtynine.swing.app.ui.pdf.to.text
 {
-	requires java.desktop;
-	requires java.logging;
+	requires static lombok;
+	requires io.github.astrapisixtynine.awt.extensions;
+	requires io.github.astrapisixtynine.easy.logger;
+	requires io.github.astrapisixtynine.file.worker;
+	requires io.github.astrapisixtynine.menu.action;
 	requires io.github.astrapisixtynine.resourcebundle.core;
 	requires io.github.astrapisixtynine.swing.base.components;
-	requires io.github.astrapisixtynine.awt.extensions;
-	requires io.github.astrapisixtynine.menu.action;
+	requires java.desktop;
+	requires java.logging;
 	requires jul.to.slf4j;
-	requires org.pf4j;
 	requires model.data;
-	requires static lombok;
+	requires org.pf4j;
 }
