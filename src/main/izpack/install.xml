@@ -1,0 +1,79 @@
+<izpack:installation xmlns:izpack="http://izpack.org/schema/installation"
+					 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+					 version="5.0"
+					 xsi:schemaLocation="http://izpack.org/schema/installation http://izpack.org/schema/5.0/izpack-installation-5.0.xsd">
+	<variables>
+		<variable name="appGroup" value="@{app.group}"/>
+		<variable name="appTitle" value="@{app.title}"/>
+		<variable name="appName" value="@{app.name}"/>
+		<variable name="appSubPath" value="@{app.subpath}"/>
+		<variable name="appVersion" value="@{app.version}"/>
+		<variable name="appJavaVersion" value="@{app.java.version}"/>
+		<variable name="appAuthor" value="@{app.author}"/>
+		<variable name="appUrl" value="@{app.url}"/>
+		<variable name="appAuthorEmail" value="@{app.author.email}"/>
+		<variable name="RESOURCEROOT" value="src/main/izpack" />
+		<!-- pre-select desktop shortcut checkbox -->
+		<variable name="DesktopShortcutCheckboxEnabled" value="true" />
+	</variables>
+
+	<info>
+		<javaversion>@{app.java.version}</javaversion>
+		<appname>@{app.name}</appname>
+		<appsubpath>app/@{app.name}</appsubpath>
+		<appversion>@{app.version}</appversion>
+		<authors>
+			<author name="@{app.author}" email="@{app.author.email}" />
+		</authors>
+		<url>@{app.url}</url>
+	</info>
+
+	<locale>
+		<langpack iso3="eng" />
+	</locale>
+
+	<guiprefs width="800" height="600" resizable="no">
+		<splash>images/peas_load.gif</splash>
+		<laf name="kunststoff">
+			<os family="windows" />
+			<os family="unix" />
+			<param name="variant" value="mist-silver" />
+		</laf>
+		<laf name="kunststoff">
+			<os family="mac" />
+			<param name="variant" value="mist-aqua" />
+		</laf>
+		<modifier key="useHeadingPanel" value="yes" />
+	</guiprefs>
+
+	<resources>
+		<res src="../README.md" id="HTMLInfoPanel.info" />
+		<res src="../LICENSE" id="LicencePanel.licence" />
+		<res src="resources/main/img/icon.png" id="installer.langsel.img" />
+	</resources>
+
+	<panels>		
+		<panel classname="HelloPanel"/>
+		<panel classname="HTMLInfoPanel"/>
+		<panel classname="LicencePanel"/>
+		<panel classname="TargetPanel"/>
+		<panel classname="PacksPanel"/>
+		<panel classname="InstallPanel"/>
+		<panel classname="SimpleFinishPanel"/>
+	</panels>
+
+	<packs>
+		<pack name="executables" required="yes">
+			<description>The executables</description>
+			<file src="../CHANGELOG.md" targetdir="${INSTALL_PATH}" />
+			<file src="../LICENSE" targetdir="${INSTALL_PATH}" />
+			<singlefile src="signed/@{app.name}-@{app.version}-all.jar" target="${INSTALL_PATH}/@{app.name}.jar" />
+			<file src="../README.md" targetdir="${INSTALL_PATH}" />
+			<file src="resources/main/doc/@{app.name}.desktop" targetdir="${INSTALL_PATH}" />
+			<file src="resources/main/doc/start.sh" targetdir="${INSTALL_PATH}" />
+			<file src="resources/main/doc/start.bat" targetdir="${INSTALL_PATH}" />
+			<file src="resources/main/img/icon.png" targetdir="${INSTALL_PATH}/img" />
+		</pack>
+	</packs>
+
+</izpack:installation>

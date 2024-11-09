@@ -1,0 +1,3 @@
+Manifest-Version: 1.0
+Package: io.github.astrapi69.swing.app
+Main-Class: io.github.astrapi69.swing.app.StartApplication
