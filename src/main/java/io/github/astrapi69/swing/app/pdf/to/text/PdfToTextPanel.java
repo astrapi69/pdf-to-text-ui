@@ -6,6 +6,7 @@ import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.PrintStream;
 
 import javax.swing.*;
 
@@ -16,7 +17,10 @@ import io.github.astrapi69.model.BaseModel;
 import io.github.astrapi69.model.api.IModel;
 import io.github.astrapi69.swing.app.ApplicationModelBean;
 import io.github.astrapi69.swing.base.BasePanel;
+import io.github.astrapi69.swing.io.TeeOutputStream;
+import io.github.astrapi69.swing.io.TextAreaOutputStream;
 import io.github.astrapisixtynine.pdf.to.text.info.ConversionResult;
+import io.github.astrapisixtynine.pdf.to.text.info.OcrLanguage;
 import io.github.astrapisixtynine.pdf.to.text.pdfbox.PdfToTextExtensions;
 import lombok.AccessLevel;
 import lombok.SneakyThrows;
@@ -33,12 +37,11 @@ public class PdfToTextPanel extends BasePanel<ApplicationModelBean>
 	JProgressBar progressBar;
 	JPanel controlPanel;
 
-	/**
-	 * Constructor with a specified model
-	 *
-	 * @param model
-	 *            the model to be used by this panel
-	 */
+	// New log text area
+	JTextArea logTextArea;
+	JScrollPane logScrollPane;
+	private JComboBox<OcrLanguage> languageComboBox;
+
 	public PdfToTextPanel(final IModel<ApplicationModelBean> model)
 	{
 		super(model);
@@ -58,43 +61,73 @@ public class PdfToTextPanel extends BasePanel<ApplicationModelBean>
 		super.onInitializeComponents();
 		ApplicationModelBean modelObject = getModelObject();
 
-		// Create a TextArea for displaying the text
+		// Initialize language selection combo box
+		languageComboBox = new JComboBox<>(OcrLanguage.values());
+		languageComboBox.setSelectedItem(OcrLanguage.ENGLISH); // Set default language
+
+		// Text area for displaying extracted text
 		textArea = new JTextArea(20, 50);
 		textArea.setLineWrap(true);
 		textArea.setWrapStyleWord(true);
 		scrollPane = new JScrollPane(textArea);
 
-		// Create Import and Export buttons
+		// Log text area for displaying log messages
+		logTextArea = new JTextArea(5, 50);
+		logTextArea.setEditable(false);
+		logScrollPane = new JScrollPane(logTextArea);
+
+		// copy the System.out and System.err to logTextArea
+		TextAreaOutputStream textAreaOutputStream = new TextAreaOutputStream(logTextArea);
+
+		// Create TeeOutputStreams that copy to both the original console streams and the JTextArea
+		System.setOut(new PrintStream(new TeeOutputStream(System.out, textAreaOutputStream)));
+		System.setErr(new PrintStream(new TeeOutputStream(System.err, textAreaOutputStream)));
+
+		// Import and Export buttons
 		importButton = new JButton("Import PDF");
 		importButton.addActionListener(new ImportButtonListener());
 
 		exportButton = new JButton("Export to File");
 		exportButton.addActionListener(new ExportButtonListener());
 
-		// Create Progress Bar
+		// Progress bar
 		progressBar = new JProgressBar();
-		// progressBar.setStringPainted(true); // Show progress percentage
 		progressBar.setVisible(false); // Initially hidden
 		progressBar.setIndeterminate(true);
 
-		// Add buttons and progress bar to a panel
+		// Control panel
 		controlPanel = new JPanel();
+
+		controlPanel.add(new JLabel("Select OCR Language:"));
+		controlPanel.add(languageComboBox);
 		controlPanel.add(importButton);
 		controlPanel.add(exportButton);
 		controlPanel.add(progressBar);
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	protected void onInitializeLayout()
 	{
 		super.onInitializeLayout();
 		setLayout(new BorderLayout());
-		// Add components to the main panel
+
+		// Main layout
 		add(controlPanel, BorderLayout.NORTH);
 		add(scrollPane, BorderLayout.CENTER);
+		add(logScrollPane, BorderLayout.SOUTH); // Log text area at the bottom
+	}
+
+	/**
+	 * Returns the selected OCR language code for Tesseract.
+	 *
+	 * @return the Tesseract language code of the selected language
+	 */
+	public String getSelectedLanguageCode()
+	{
+		OcrLanguage selectedLanguage = (OcrLanguage)languageComboBox.getSelectedItem();
+		return selectedLanguage != null
+			? selectedLanguage.getCode()
+			: OcrLanguage.ENGLISH.getCode();
 	}
 
 
@@ -110,17 +143,16 @@ public class PdfToTextPanel extends BasePanel<ApplicationModelBean>
 				File file = fileChooser.getSelectedFile();
 				if (file != null)
 				{
-					// Start PDF processing with a progress bar
+					appendLog("Selected PDF file: " + file.getName());
 					new PdfProcessingWorker(file).execute();
 				}
 			}
 		}
 	}
 
-
 	private class PdfProcessingWorker extends SwingWorker<String, Void>
 	{
-		private File pdfFile;
+		private final File pdfFile;
 
 		public PdfProcessingWorker(File pdfFile)
 		{
@@ -135,9 +167,11 @@ public class PdfToTextPanel extends BasePanel<ApplicationModelBean>
 			try
 			{
 				textArea.setText(get());
+				appendLog("PDF processed successfully.");
 			}
 			catch (Exception e)
 			{
+				appendLog("Error processing PDF: " + e.getMessage());
 				JOptionPane.showMessageDialog(PdfToTextPanel.this,
 					"Error processing PDF: " + e.getMessage());
 			}
@@ -147,26 +181,27 @@ public class PdfToTextPanel extends BasePanel<ApplicationModelBean>
 		protected String doInBackground()
 		{
 			progressBar.setVisible(true);
-			progressBar.setIndeterminate(true); // Show indeterminate progress while processing
-			// Call your PDF-to-text conversion method here
-			return convertPdfToText(pdfFile); // Replace with actual conversion logic
+			progressBar.setIndeterminate(true);
+			appendLog("Starting PDF-to-text conversion...");
+			return convertPdfToText(pdfFile);
 		}
 
-		// Dummy PDF-to-text conversion method
 		@SneakyThrows
 		private String convertPdfToText(File pdfFile)
 		{
-			// Implement your PDF-to-text conversion logic here
-			File outputDir = DirectoryFactory.newDirectory(SystemFileExtensions.getTempDir(),
-				"pdf-to-text");
-
+			File userTempDir = SystemFileExtensions.getUserTempDir();
+			if (!userTempDir.exists())
+			{
+				DirectoryFactory.newDirectory(userTempDir);
+			}
+			File outputDir = DirectoryFactory.newDirectory(userTempDir, "pdf-to-text");
+			String selectedLanguageCode = getSelectedLanguageCode();
 			ConversionResult conversionResult = PdfToTextExtensions.convertPdfToTextfile(pdfFile,
-				outputDir);
-			String string = ReadFileExtensions.fromFile(conversionResult.getResultTextFile());
-			return string; // Placeholder text
+				outputDir, selectedLanguageCode);
+			appendLog("PDF conversion complete.");
+			return ReadFileExtensions.fromFile(conversionResult.getResultTextFile());
 		}
 	}
-
 
 	private class ExportButtonListener implements ActionListener
 	{
@@ -181,11 +216,13 @@ public class PdfToTextPanel extends BasePanel<ApplicationModelBean>
 				try (FileWriter writer = new FileWriter(file))
 				{
 					writer.write(textArea.getText());
+					appendLog("Text exported to file: " + file.getName());
 					JOptionPane.showMessageDialog(PdfToTextPanel.this,
 						"Text exported successfully!");
 				}
 				catch (IOException ex)
 				{
+					appendLog("Error exporting text: " + ex.getMessage());
 					JOptionPane.showMessageDialog(PdfToTextPanel.this,
 						"Error exporting text: " + ex.getMessage());
 				}
@@ -193,4 +230,10 @@ public class PdfToTextPanel extends BasePanel<ApplicationModelBean>
 		}
 	}
 
+	// Method to append log messages to the log text area
+	private void appendLog(String message)
+	{
+		logTextArea.append(message + "\n");
+		logTextArea.setCaretPosition(logTextArea.getDocument().getLength());
+	}
 }

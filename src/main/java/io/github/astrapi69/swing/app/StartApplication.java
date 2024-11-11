@@ -46,7 +46,7 @@ public class StartApplication
 		ApplicationLoggingConfiguration.setDefaultSystemProperties();
 		LoggingConfiguration.setup();
 		log.info("JUL logs are now routed to SLF4J.");
-		TemplateApplicationFrame frame = new TemplateApplicationFrame();
+		PdfToTextApplicationFrame frame = new PdfToTextApplicationFrame();
 		while (!frame.isVisible())
 		{
 			ScreenSizeExtensions.showFrame(frame);

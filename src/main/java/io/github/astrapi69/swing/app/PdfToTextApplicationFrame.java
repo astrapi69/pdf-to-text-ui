@@ -48,19 +48,19 @@ import lombok.Getter;
 import lombok.experimental.FieldDefaults;
 
 /**
- * The class {@link TemplateApplicationFrame} represents the main frame of the application that sets
- * up and initializes the application window with specific settings and components
+ * The class {@link PdfToTextApplicationFrame} represents the main frame of the application that
+ * sets up and initializes the application window with specific settings and components
  */
 @Getter
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class TemplateApplicationFrame extends ApplicationPanelFrame<ApplicationModelBean>
+public class PdfToTextApplicationFrame extends ApplicationPanelFrame<ApplicationModelBean>
 {
 
 	/**
-	 * The single instance of {@link TemplateApplicationFrame}
+	 * The single instance of {@link PdfToTextApplicationFrame}
 	 */
 	@Getter
-	private static TemplateApplicationFrame instance;
+	private static PdfToTextApplicationFrame instance;
 
 	/** The main application panel */
 	BasePanel<ApplicationModelBean> applicationPanel;
@@ -69,10 +69,10 @@ public class TemplateApplicationFrame extends ApplicationPanelFrame<ApplicationM
 	PluginManager pluginManager;
 
 	/**
-	 * Constructs a new {@link TemplateApplicationFrame} with the specified title from the resource
+	 * Constructs a new {@link PdfToTextApplicationFrame} with the specified title from the resource
 	 * bundle
 	 */
-	public TemplateApplicationFrame()
+	public PdfToTextApplicationFrame()
 	{
 		super(Messages.getString("mainframe.title"));
 	}
@@ -169,14 +169,13 @@ public class TemplateApplicationFrame extends ApplicationPanelFrame<ApplicationM
 	}
 
 	/**
-	 * Factory method for create a new {@link ApplicationPanel} object
+	 * Factory method for create a new {@link BasePanel} object
 	 *
-	 * @return the new {@link ApplicationPanel} object
+	 * @return the new {@link BasePanel} object
 	 */
 	protected BasePanel<ApplicationModelBean> newApplicationPanel()
 	{
-		BasePanel<ApplicationModelBean> applicationPanel = new PdfToTextPanel(getModel());
-		return applicationPanel;
+		return new PdfToTextPanel(getModel());
 	}
 
 }
