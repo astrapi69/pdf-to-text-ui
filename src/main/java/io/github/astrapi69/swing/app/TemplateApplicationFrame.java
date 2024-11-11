@@ -39,6 +39,7 @@ import org.pf4j.PluginRepository;
 
 import io.github.astrapi69.awt.screen.ScreenSizeExtensions;
 import io.github.astrapi69.model.BaseModel;
+import io.github.astrapi69.swing.app.pdf.to.text.PdfToTextPanel;
 import io.github.astrapi69.swing.base.ApplicationPanelFrame;
 import io.github.astrapi69.swing.base.BasePanel;
 import io.github.astrapi69.swing.plaf.LookAndFeels;
@@ -62,7 +63,7 @@ public class TemplateApplicationFrame extends ApplicationPanelFrame<ApplicationM
 	private static TemplateApplicationFrame instance;
 
 	/** The main application panel */
-	ApplicationPanel applicationPanel;
+	BasePanel<ApplicationModelBean> applicationPanel;
 
 	/** The plugin manager */
 	PluginManager pluginManager;
@@ -172,9 +173,9 @@ public class TemplateApplicationFrame extends ApplicationPanelFrame<ApplicationM
 	 *
 	 * @return the new {@link ApplicationPanel} object
 	 */
-	protected ApplicationPanel newApplicationPanel()
+	protected BasePanel<ApplicationModelBean> newApplicationPanel()
 	{
-		ApplicationPanel applicationPanel = new ApplicationPanel(getModel());
+		BasePanel<ApplicationModelBean> applicationPanel = new PdfToTextPanel(getModel());
 		return applicationPanel;
 	}
 

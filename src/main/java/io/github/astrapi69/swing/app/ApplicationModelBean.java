@@ -24,6 +24,7 @@
  */
 package io.github.astrapi69.swing.app;
 
+import io.github.astrapisixtynine.pdf.to.text.info.ConversionResult;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -49,4 +50,7 @@ public class ApplicationModelBean
 {
 	/** The title of the application */
 	String title;
+
+	/** The title of the application */
+	ConversionResult conversionResult;
 }

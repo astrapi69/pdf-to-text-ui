@@ -31,11 +31,14 @@ import javax.swing.JLabel;
 import io.github.astrapi69.model.BaseModel;
 import io.github.astrapi69.model.api.IModel;
 import io.github.astrapi69.swing.base.BasePanel;
+import lombok.AccessLevel;
+import lombok.experimental.FieldDefaults;
 
 /**
  * The class {@code ApplicationPanel} represents a custom panel that extends {@link BasePanel} and
  * is designed to display a label with the title from the {@link ApplicationModelBean}
  */
+@FieldDefaults(level = AccessLevel.PRIVATE)
 public class ApplicationPanel extends BasePanel<ApplicationModelBean>
 {
 	/** The label component that displays the title */
