@@ -24,8 +24,12 @@
  */
 package io.github.astrapi69.swing.app;
 
+import javax.swing.JOptionPane;
+
 import io.github.astrapi69.awt.screen.ScreenSizeExtensions;
+import io.github.astrapi69.swing.dialog.DialogExtensions;
 import io.github.astrapisixtynine.easy.logger.LoggingConfiguration;
+import io.github.astrapisixtynine.pdf.to.text.tess4j.ImagePdfToTextExtensions;
 import lombok.extern.java.Log;
 
 /**
@@ -46,10 +50,32 @@ public class StartApplication
 		ApplicationLoggingConfiguration.setDefaultSystemProperties();
 		LoggingConfiguration.setup();
 		log.info("JUL logs are now routed to SLF4J.");
-		PdfToTextApplicationFrame frame = new PdfToTextApplicationFrame();
-		while (!frame.isVisible())
+		boolean tesseractInstalled = ImagePdfToTextExtensions.isTesseractInstalled();
+		if (!tesseractInstalled)
 		{
-			ScreenSizeExtensions.showFrame(frame);
+			log.info("Tesseract is not installed");
+			int option = DialogExtensions.showConfirmDialog(null, "Tesseract not installed",
+				"<div align='center' width='300'>Tesseract is not installed</div>"
+					+ "<div>You have to install tesseract on your local machine</div>"
+					+ "<div>How to install tesseract on your local machine is documented on the official site."
+					+ "<br><a href='https://tesseract-ocr.github.io/tessdoc/Installation.html'>https://tesseract-ocr.github.io/tessdoc/Installation.html</a></div>",
+				JOptionPane.OK_CANCEL_OPTION, JOptionPane.ERROR_MESSAGE, null);
+			if (option == JOptionPane.OK_OPTION)
+			{
+				System.exit(0);
+			}
+			if (option == JOptionPane.CANCEL_OPTION)
+			{
+				System.exit(0);
+			}
+		}
+		else
+		{
+			PdfToTextApplicationFrame frame = new PdfToTextApplicationFrame();
+			while (!frame.isVisible())
+			{
+				ScreenSizeExtensions.showFrame(frame);
+			}
 		}
 	}
 

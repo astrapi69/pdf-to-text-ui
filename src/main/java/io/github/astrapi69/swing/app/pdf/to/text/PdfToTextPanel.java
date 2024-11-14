@@ -1,3 +1,27 @@
+/**
+ * The MIT License
+ *
+ * Copyright (C) 2024 Asterios Raptis
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining
+ * a copy of this software and associated documentation files (the
+ * "Software"), to deal in the Software without restriction, including
+ * without limitation the rights to use, copy, modify, merge, publish,
+ * distribute, sublicense, and/or sell copies of the Software, and to
+ * permit persons to whom the Software is furnished to do so, subject to
+ * the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be
+ * included in all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+ * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+ * MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+ * NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
+ * LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
+ * OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
+ * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+ */
 package io.github.astrapi69.swing.app.pdf.to.text;
 
 import java.awt.*;
@@ -7,9 +31,12 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintStream;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.swing.*;
 
+import io.github.astrapi69.collection.list.ListExtensions;
 import io.github.astrapi69.file.create.DirectoryFactory;
 import io.github.astrapi69.file.read.ReadFileExtensions;
 import io.github.astrapi69.file.system.SystemFileExtensions;
@@ -22,6 +49,7 @@ import io.github.astrapi69.swing.io.TextAreaOutputStream;
 import io.github.astrapisixtynine.pdf.to.text.info.ConversionResult;
 import io.github.astrapisixtynine.pdf.to.text.info.OcrLanguage;
 import io.github.astrapisixtynine.pdf.to.text.pdfbox.PdfToTextExtensions;
+import io.github.astrapisixtynine.pdf.to.text.tess4j.ImagePdfToTextExtensions;
 import lombok.AccessLevel;
 import lombok.SneakyThrows;
 import lombok.experimental.FieldDefaults;
@@ -62,8 +90,13 @@ public class PdfToTextPanel extends BasePanel<ApplicationModelBean>
 		ApplicationModelBean modelObject = getModelObject();
 
 		// Initialize language selection combo box
-		languageComboBox = new JComboBox<>(OcrLanguage.values());
-		languageComboBox.setSelectedItem(OcrLanguage.ENGLISH); // Set default language
+		List<String> tesseractSupportedLanguages = ImagePdfToTextExtensions
+			.getTesseractSupportedLanguages();
+		List<OcrLanguage> supportedLanguages = PdfToTextPanel
+			.filterLanguagesByCodes(tesseractSupportedLanguages);
+
+		languageComboBox = new JComboBox<>(ListExtensions.toArray(supportedLanguages));
+		languageComboBox.setSelectedItem(supportedLanguages.get(0)); // Set default language
 
 		// Text area for displaying extracted text
 		textArea = new JTextArea(20, 50);
@@ -103,6 +136,38 @@ public class PdfToTextPanel extends BasePanel<ApplicationModelBean>
 		controlPanel.add(importButton);
 		controlPanel.add(exportButton);
 		controlPanel.add(progressBar);
+	}
+
+	/**
+	 * Filters the {@link OcrLanguage} enum values based on the provided list of language codes.
+	 *
+	 * @param codes
+	 *            the list of Tesseract language codes to filter by
+	 * @return a list of {@link OcrLanguage} enums that match the provided codes
+	 */
+	public static List<OcrLanguage> filterLanguagesByCodes(List<String> codes)
+	{
+		return codes.stream().map(PdfToTextPanel::getLanguageByCode)
+			.filter(language -> language != null).collect(Collectors.toList());
+	}
+
+	/**
+	 * Finds an {@link OcrLanguage} by its language code.
+	 *
+	 * @param code
+	 *            the Tesseract language code
+	 * @return the corresponding {@link OcrLanguage}, or {@code null} if not found
+	 */
+	private static OcrLanguage getLanguageByCode(String code)
+	{
+		for (OcrLanguage language : OcrLanguage.values())
+		{
+			if (language.getCode().equals(code))
+			{
+				return language;
+			}
+		}
+		return null;
 	}
 
 	@Override
