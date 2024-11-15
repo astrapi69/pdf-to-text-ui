@@ -65,4 +65,3 @@ The logging panel at the bottom displays messages for:
 
 #### Help and Support
 For further assistance, consult the documentation or contact the developer.
-
