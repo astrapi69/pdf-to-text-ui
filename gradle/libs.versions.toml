@@ -16,16 +16,16 @@ jul-to-slf4j-version = "2.1.0-alpha1"
 junit-jupiter-params-version = "5.11.3"
 junit-jupiter-version = "5.11.3"
 logback-classic-version = "1.5.12"
-lombok-version = "1.18.34"
+lombok-version = "1.18.36"
 meanbean-version = "3.0.0-M9"
 menu-action-version = "4.1"
 mockito-core-version = "5.14.2"
 model-data-version = "3.1"
-pdf-to-text-extensions-version = "1.3"
+pdf-to-text-extensions-version = "1.4"
 pf4j-version = "3.12.1"
 resourcebundle-core-version = "6.0"
 silly-collection-version = "28.1"
-silly-io-version = "3.3"
+silly-io-version = "3.4"
 slf4j-api-version = "2.1.0-alpha1"
 swing-base-components-version = "5.1"
 throwable-version = "3"
@@ -75,8 +75,9 @@ core-dependencies = [
     "pdf-to-text-extensions",
     "pf4j",
     "resourcebundle-core",
-    "swing-base-components",
     "silly-collection",
+    "silly-io",
+    "swing-base-components",
 ]
 # Bundle of the izpack dependencies
 izpack = [
@@ -110,7 +111,6 @@ unit-testing = [
     "meanbean",
     "mockito-core",
     "mockito-junit-jupiter",
-    "silly-io",
     "throwable",
 ]
 

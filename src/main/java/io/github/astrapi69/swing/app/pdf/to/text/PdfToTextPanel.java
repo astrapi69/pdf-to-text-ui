@@ -32,14 +32,16 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import javax.swing.*;
+import javax.swing.filechooser.FileNameExtensionFilter;
 
 import io.github.astrapi69.collection.list.ListExtensions;
 import io.github.astrapi69.file.create.DirectoryFactory;
 import io.github.astrapi69.file.read.ReadFileExtensions;
 import io.github.astrapi69.file.system.SystemFileExtensions;
+import io.github.astrapi69.io.file.FileExtension;
+import io.github.astrapi69.io.file.FilenameExtensions;
 import io.github.astrapi69.model.BaseModel;
 import io.github.astrapi69.model.api.IModel;
 import io.github.astrapi69.swing.app.ApplicationModelBean;
@@ -92,7 +94,7 @@ public class PdfToTextPanel extends BasePanel<ApplicationModelBean>
 		// Initialize language selection combo box
 		List<String> tesseractSupportedLanguages = ImagePdfToTextExtensions
 			.getTesseractSupportedLanguages();
-		List<OcrLanguage> supportedLanguages = PdfToTextPanel
+		List<OcrLanguage> supportedLanguages = OcrLanguage
 			.filterLanguagesByCodes(tesseractSupportedLanguages);
 
 		languageComboBox = new JComboBox<>(ListExtensions.toArray(supportedLanguages));
@@ -136,19 +138,6 @@ public class PdfToTextPanel extends BasePanel<ApplicationModelBean>
 		controlPanel.add(importButton);
 		controlPanel.add(exportButton);
 		controlPanel.add(progressBar);
-	}
-
-	/**
-	 * Filters the {@link OcrLanguage} enum values based on the provided list of language codes.
-	 *
-	 * @param codes
-	 *            the list of Tesseract language codes to filter by
-	 * @return a list of {@link OcrLanguage} enums that match the provided codes
-	 */
-	public static List<OcrLanguage> filterLanguagesByCodes(List<String> codes)
-	{
-		return codes.stream().map(PdfToTextPanel::getLanguageByCode)
-			.filter(language -> language != null).collect(Collectors.toList());
 	}
 
 	/**
@@ -202,12 +191,16 @@ public class PdfToTextPanel extends BasePanel<ApplicationModelBean>
 		public void actionPerformed(ActionEvent e)
 		{
 			JFileChooser fileChooser = new JFileChooser();
+			FileNameExtensionFilter fileNameExtensionFilter = new FileNameExtensionFilter(
+				"PDF files (*.pdf)", "pdf");
+			fileChooser.setFileFilter(fileNameExtensionFilter);
 			int option = fileChooser.showOpenDialog(PdfToTextPanel.this);
 			if (option == JFileChooser.APPROVE_OPTION)
 			{
 				File file = fileChooser.getSelectedFile();
 				if (file != null)
 				{
+					getModelObject().setSelectedPdfFile(file);
 					appendLog("Selected PDF file: " + file.getName());
 					new PdfProcessingWorker(file).execute();
 				}
@@ -273,23 +266,32 @@ public class PdfToTextPanel extends BasePanel<ApplicationModelBean>
 		@Override
 		public void actionPerformed(ActionEvent e)
 		{
-			JFileChooser fileChooser = new JFileChooser();
-			int option = fileChooser.showSaveDialog(PdfToTextPanel.this);
-			if (option == JFileChooser.APPROVE_OPTION)
+			File selectedPdfFile = getModelObject().getSelectedPdfFile();
+			if (selectedPdfFile != null)
 			{
-				File file = fileChooser.getSelectedFile();
-				try (FileWriter writer = new FileWriter(file))
+				File parentFile = selectedPdfFile.getParentFile();
+				JFileChooser fileChooser = new JFileChooser(parentFile);
+				String fileName = FilenameExtensions.getFilenameWithNewExtension(selectedPdfFile,
+					FileExtension.TXT);
+				File textFile = new File(parentFile, fileName);
+				fileChooser.setSelectedFile(textFile);
+				int option = fileChooser.showSaveDialog(PdfToTextPanel.this);
+				if (option == JFileChooser.APPROVE_OPTION)
 				{
-					writer.write(textArea.getText());
-					appendLog("Text exported to file: " + file.getName());
-					JOptionPane.showMessageDialog(PdfToTextPanel.this,
-						"Text exported successfully!");
-				}
-				catch (IOException ex)
-				{
-					appendLog("Error exporting text: " + ex.getMessage());
-					JOptionPane.showMessageDialog(PdfToTextPanel.this,
-						"Error exporting text: " + ex.getMessage());
+					File file = fileChooser.getSelectedFile();
+					try (FileWriter writer = new FileWriter(file))
+					{
+						writer.write(textArea.getText());
+						appendLog("Text exported to file: " + file.getName());
+						JOptionPane.showMessageDialog(PdfToTextPanel.this,
+							"Text exported successfully!");
+					}
+					catch (IOException ex)
+					{
+						appendLog("Error exporting text: " + ex.getMessage());
+						JOptionPane.showMessageDialog(PdfToTextPanel.this,
+							"Error exporting text: " + ex.getMessage());
+					}
 				}
 			}
 		}

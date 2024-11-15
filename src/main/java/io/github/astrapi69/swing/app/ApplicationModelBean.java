@@ -24,6 +24,8 @@
  */
 package io.github.astrapi69.swing.app;
 
+import java.io.File;
+
 import io.github.astrapisixtynine.pdf.to.text.info.ConversionResult;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -53,4 +55,7 @@ public class ApplicationModelBean
 
 	/** The title of the application */
 	ConversionResult conversionResult;
+
+	/** The selected pdf file */
+	File selectedPdfFile;
 }
