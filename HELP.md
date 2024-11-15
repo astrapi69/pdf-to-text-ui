@@ -1,98 +1,68 @@
-# Getting Started
+### Documentation for PDF-to-Text UI
 
-### Rename your gradle project after cloning template project
+#### Overview
+The PDF-to-Text UI is a Java Swing-based application designed to extract text from PDF files using OCR technology. This application provides a user-friendly interface for importing PDF files, selecting OCR language options, and exporting extracted text to a file.
 
-Go to the unit test class 'io.github.astrapi69.InitialTemplateTest' and set your description for your repository in the
-disabled unit test method testRenameToConcreteProject. Then enable the unit test method testRenameToConcreteProject by
-comment or delete the annotation @Disabled and run it after. This will rename your gradle project. Now you can delete
-all unrelated files and test dependencies that you do not need.
+#### Features
+1. **Select OCR Language**: Users can choose from multiple languages for OCR processing via a dropdown menu.
+2. **Import PDF**: A button to upload a PDF file for text extraction.
+3. **Export to File**: A button to save the extracted text to a file.
+4. **Preview Text**: Displays the extracted text in a large, editable text area.
+5. **Logging Panel**: A console-like area to display logs and debug information.
 
-If you are use intellij ide than you can add the new gradle run configurations to git and delete the run configurations
-for the unit test and the unit test class itself.
+#### User Interface Components
+- **Menu Bar**:
+    - **File**: Placeholder for future options.
+    - **Look and Feel**: Allows users to customize the appearance of the application.
+    - **Help**: Links to application help and support.
+- **Toolbar**:
+    - **Select OCR Language**: Dropdown menu for selecting the desired OCR language.
+    - **Import PDF**: Button to open a file chooser dialog for selecting a PDF file.
+    - **Export to File**: Button to export the extracted text to a file.
+- **Text Area**:
+    - A large, editable space to display the extracted text.
+- **Logging Panel**:
+    - Located at the bottom of the application, it shows debug information and application logs.
 
-### Setting Secrets
+#### Usage Instructions
+1. **Select OCR Language**:
+    - From the dropdown menu in the toolbar, choose the desired language for OCR processing.
 
-When you clone from this repository you have to consider to set the secrets for the sonatype username and password.
+2. **Import a PDF**:
+    - Click the **Import PDF** button.
+    - A file chooser dialog will appear. Navigate to the desired PDF file and click **Open**.
 
-In the project gradle.properties we have two properties:
-(Note that the project gradle.properties is public and can see everyone)
+3. **Extract Text**:
+    - The application will process the PDF and display the extracted text in the text area.
 
-```
-projectRepositoriesUserNameKey=ossrhUsername
-projectRepositoriesPasswordKey=ossrhPassword
-```
+4. **Edit Text (Optional)**:
+    - The text displayed in the text area can be manually edited if needed.
 
-The value of this properties keys are properties keys from your local file '~/.gradle/gradle.properties' were you keep
-your username and your secret password that have to be kept secret. So in your local file '~/.gradle/gradle.properties'
-looks for instance like this:
+5. **Export to File**:
+    - Click the **Export to File** button.
+    - Choose a location to save the file, specify a file name, and click **Save**.
 
-```
-ossrhUsername=ReplaceThisWithYourSonatypeUsername
-ossrhPassword=ReplaceThisWithYourSecretSonatypePassword
-```
-(Note that you have to replace 'ReplaceThisWithYourSonatypeUsername' and 'ReplaceThisWithYourSecretSonatypePassword'
-with your corresponding username and password)
+#### Troubleshooting
+- If no plugins are found, ensure the plugin directory is correctly set up and contains valid plugins.
+- If the OCR process fails:
+    - Verify that the PDF file is not corrupted.
+    - Check the selected OCR language compatibility.
 
-Your local build builds now successful. But the build in your actions fail because you do not have set the secrets
-in your repository.
+#### Logs
+The logging panel at the bottom displays messages for:
+- Debugging
+- Errors
+- Status updates
 
-For setting secrets for your repository you can consider the following sections:
+#### Requirements
+- **Java Version**: Ensure Java 8 or higher is installed.
+- **Dependencies**: Apache PDFBox, Tesseract OCR, and related libraries.
 
-* [Creating encrypted secrets for a repository](https://docs.github.com/en/actions/security-guides/encrypted-secrets#creating-encrypted-secrets-for-a-repository)
-* [Creating encrypted secrets for an organization](https://docs.github.com/en/actions/security-guides/encrypted-secrets#creating-encrypted-secrets-for-an-organization)
+#### Future Enhancements
+- Add more OCR languages.
+- Support for batch processing of multiple PDFs.
+- Improved error handling and notifications.
 
-Beware in step where you set the name you have to set for 'ossrhUsername' the value: 'ossrhUsername' and not 'OSSRHUSERNAME'
-The same procedure for the secret 'ossrhPassword'
+#### Help and Support
+For further assistance, consult the documentation or contact the developer.
 
-Note that for organizations you only need to set the secrets once.
-
-The following source code is the complete gradle.yml in the repository folder '.github/workflows'
-
-```
-name: Java CI with Gradle
-
-on:
-  push:
-    branches: [ develop ]
-  pull_request:
-    branches: [ develop ]
-
-jobs:
-  build:
-
-    runs-on: ubuntu-latest
-
-    steps:
-    - uses: actions/checkout@v3
-    - name: Set up JDK 17
-      uses: actions/setup-java@v3
-      with:
-        java-version: '17'
-        distribution: 'temurin'
-    - name: Build with Gradle
-      uses: gradle/gradle-build-action@v2.8.0
-      with:
-        arguments: build
-      env:
-        ossrhUsername: ${{secrets.OSSRHUSERNAME}}
-        ossrhPassword: ${{secrets.OSSRHPASSWORD}}
-    - uses: codecov/codecov-action@v3
-      with:
-        token: ${{ secrets.CODECOV_TOKEN }} # not required for public repos
-
-```
-
-So you have to set two secrets: OSSRHUSERNAME, OSSRHPASSWORD. And one optional if your repository is not public
-CODECOV_TOKEN where you save your codecov token value.
-
-### Reference Documentation
-
-For further reference, please consider the following sections:
-
-* [Official Gradle documentation](https://docs.gradle.org)
-
-### Additional Links
-
-These additional references should also help you:
-
-* [Gradle Build Scans – insights for your project's build](https://scans.gradle.com#gradle)
