@@ -4,22 +4,26 @@
 Version 1.1.0-SNAPSHOT
 -------------
 
-ADDED:
+## [Unreleased]
 
-- new field in class ApplicationModelBean for the selected pdf file
+### Added
+- Installation script for Tesseract OCR on Linux using Bash
+- Installation script for Tesseract OCR on Windows using Batch (without Chocolatey)
+- Installation script for Tesseract OCR on Windows with Chocolatey (via Bash)
+- New field in `ApplicationModelBean` for the selected PDF file
 
-CHANGED:
-
-- update of lombok dependency to new patch version 1.18.36
-- update of dependency pdf-to-text-extensions to new minor version 1.4
-- update of dependency silly-io to new minor version 3.4
+### Changed
+- Updated Lombok dependency to patch version `1.18.36`
+- Updated dependency `pdf-to-text-extensions` to minor version `1.4`
+- Updated dependency `silly-io` to minor version `3.4`
 
 Version 1.0.0
 -------------
 
-ADDED:
+### Added
+- Created `CHANGELOG.md` file
 
-- new CHANGELOG.md file created
+---
 
-Notable links:
-[keep a changelog](http://keepachangelog.com/en/1.0.0/) Don’t let your friends dump git logs into changelogs
+**Notable links:**
+[Keep a Changelog](http://keepachangelog.com/en/1.0.0/) — Don’t let your friends dump git logs into changelogs
