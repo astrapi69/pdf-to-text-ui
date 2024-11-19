@@ -113,12 +113,12 @@ public class ApplicationDesktopMenu extends BaseDesktopMenu
 					.labelApplicationName(
 						Messages.getString("InfoJPanel.application.name.key", "Application name:"))
 					.applicationName(
-						Messages.getString("InfoJPanel.application.name.value", "mystic-crypt-ui"))
+						Messages.getString("InfoJPanel.application.name.value", "pdf-to-text-ui"))
 					.labelCopyright(Messages.getString("InfoJPanel.copyright.key", "Copyright(C):"))
 					.copyright(
-						Messages.getString("InfoJPanel.copyright.value", "2016 Asterios Raptis"))
+						Messages.getString("InfoJPanel.copyright.value", "2024 Asterios Raptis"))
 					.labelVersion(Messages.getString("InfoJPanel.version.key", "Version:"))
-					.version(Messages.getString("InfoJPanel.version.value", "8.1-SNAPSHOT"))
+					.version(Messages.getString("InfoJPanel.version.value", "1.1.0"))
 					.licence(Messages.getString("InfoJPanel.license.information.value",
 						"This Software is licensed under the MIT License"))
 					.build();
