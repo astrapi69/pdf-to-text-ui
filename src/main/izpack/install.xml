@@ -71,7 +71,7 @@
 			<file src="../README.md" targetdir="${INSTALL_PATH}" />
 			<file src="resources/main/doc/@{app.name}.desktop" targetdir="${INSTALL_PATH}" />
 			<file src="resources/main/doc/start.sh" targetdir="${INSTALL_PATH}" />
-			<file src="resources/main/doc/install-tesseract.sh" targetdir="${INSTALL_PATH}" />
+			<file src="resources/main/doc/install-tesseract-linux-or-windows-with-chocolatey.sh" targetdir="${INSTALL_PATH}" />
 			<file src="resources/main/doc/start.bat" targetdir="${INSTALL_PATH}" />
 			<file src="resources/main/doc/install-tesseract.bat" targetdir="${INSTALL_PATH}" />
 			<file src="resources/main/img/icon.png" targetdir="${INSTALL_PATH}/img" />
