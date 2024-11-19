@@ -24,7 +24,10 @@
  */
 package io.github.astrapi69.swing.app;
 
+import java.awt.Component;
 import java.nio.file.Paths;
+
+import javax.swing.JMenu;
 
 import org.pf4j.CompoundPluginRepository;
 import org.pf4j.DefaultExtensionFinder;
@@ -45,6 +48,7 @@ import io.github.astrapi69.swing.base.BasePanel;
 import io.github.astrapi69.swing.plaf.LookAndFeels;
 import lombok.AccessLevel;
 import lombok.Getter;
+import lombok.NonNull;
 import lombok.experimental.FieldDefaults;
 
 /**
@@ -147,6 +151,15 @@ public class PdfToTextApplicationFrame extends ApplicationPanelFrame<Application
 		setTitle(Messages.getString("mainframe.title"));
 		setDefaultLookAndFeel(LookAndFeels.NIMBUS, this);
 		this.setSize(ScreenSizeExtensions.getScreenWidth(), ScreenSizeExtensions.getScreenHeight());
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	protected JMenu newDesktopMenu(@NonNull Component applicationFrame)
+	{
+		return new ApplicationDesktopMenu(applicationFrame);
 	}
 
 	/**

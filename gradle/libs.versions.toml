@@ -7,11 +7,12 @@ gradle-migration-data-version = "3.0"
 gradle-plugin-grgit-version = "5.3.0"
 gradle-plugin-izpack-version = "3.2"
 gradle-plugin-license-version = "0.16.1"
-gradle-plugin-lombok-version = "8.10.2"
+gradle-plugin-lombok-version = "8.11"
 gradle-plugin-spotless-version = "7.0.0.BETA4"
 gradle-plugin-version-catalog-update-version = "0.8.5"
 gradle-plugin-versions-version = "0.51.0"
 izpack-ant-version = "5.2.3"
+jobj-core-version = "9.1"
 jul-to-slf4j-version = "2.1.0-alpha1"
 junit-jupiter-params-version = "5.11.3"
 junit-jupiter-version = "5.11.3"
@@ -37,6 +38,7 @@ easy-logger = { module = "io.github.astrapi69:easy-logger", version.ref = "easy-
 file-worker = { module = "io.github.astrapi69:file-worker", version.ref = "file-worker-version" }
 gradle-migration-data = { module = "io.github.astrapi69:gradle-migration-data", version.ref = "gradle-migration-data-version" }
 izpack-ant = { module = "org.codehaus.izpack:izpack-ant", version.ref = "izpack-ant-version" }
+jobj-core = { module = "io.github.astrapi69:jobj-core", version.ref = "jobj-core-version" }
 jul-to-slf4j = { module = "org.slf4j:jul-to-slf4j", version.ref = "jul-to-slf4j-version" }
 junit-jupiter = { module = "org.junit.jupiter:junit-jupiter", version.ref = "junit-jupiter-version" }
 junit-jupiter-params = { module = "org.junit.jupiter:junit-jupiter-params", version.ref = "junit-jupiter-params-version" }
@@ -70,6 +72,7 @@ compile-only = [
 core-dependencies = [
     "awt-extensions",
     "file-worker",
+    "jobj-core",
     "menu-action",
     "model-data",
     "pdf-to-text-extensions",
