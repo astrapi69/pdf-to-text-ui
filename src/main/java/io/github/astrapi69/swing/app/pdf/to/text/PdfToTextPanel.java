@@ -31,7 +31,9 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintStream;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.swing.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
@@ -39,6 +41,7 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 import io.github.astrapi69.collection.list.ListExtensions;
 import io.github.astrapi69.file.create.DirectoryFactory;
 import io.github.astrapi69.file.read.ReadFileExtensions;
+import io.github.astrapi69.file.rename.RenameFileExtensions;
 import io.github.astrapi69.file.system.SystemFileExtensions;
 import io.github.astrapi69.io.file.FileExtension;
 import io.github.astrapi69.io.file.FilenameExtensions;
@@ -55,7 +58,9 @@ import io.github.astrapisixtynine.pdf.to.text.tess4j.ImagePdfToTextExtensions;
 import lombok.AccessLevel;
 import lombok.SneakyThrows;
 import lombok.experimental.FieldDefaults;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class PdfToTextPanel extends BasePanel<ApplicationModelBean>
 {
@@ -64,6 +69,8 @@ public class PdfToTextPanel extends BasePanel<ApplicationModelBean>
 	JScrollPane scrollPane;
 	JButton importButton;
 	JButton exportButton;
+	JButton startOcrProcessButton;
+	JButton clearEditorsButton;
 	JProgressBar progressBar;
 	JPanel controlPanel;
 
@@ -122,8 +129,19 @@ public class PdfToTextPanel extends BasePanel<ApplicationModelBean>
 		importButton = new JButton("Import PDF");
 		importButton.addActionListener(new ImportButtonListener());
 
+		startOcrProcessButton = new JButton("Start OCR Process");
+		startOcrProcessButton.addActionListener(new StartOcrProcessButtonListener());
+
 		exportButton = new JButton("Export to File");
 		exportButton.addActionListener(new ExportButtonListener());
+
+		clearEditorsButton = new JButton("Clear PDF and Editors");
+		clearEditorsButton.addActionListener(e -> {
+			textArea.setText("");
+			logTextArea.setText("");
+			getModelObject().setSelectedPdfFile(null);
+			getModelObject().setConversionResult(null);
+		});
 
 		// Progress bar
 		progressBar = new JProgressBar();
@@ -136,7 +154,9 @@ public class PdfToTextPanel extends BasePanel<ApplicationModelBean>
 		controlPanel.add(new JLabel("Select OCR Language:"));
 		controlPanel.add(languageComboBox);
 		controlPanel.add(importButton);
+		controlPanel.add(startOcrProcessButton);
 		controlPanel.add(exportButton);
+		controlPanel.add(clearEditorsButton);
 		controlPanel.add(progressBar);
 	}
 
@@ -184,7 +204,6 @@ public class PdfToTextPanel extends BasePanel<ApplicationModelBean>
 			: OcrLanguage.ENGLISH.getCode();
 	}
 
-
 	private class ImportButtonListener implements ActionListener
 	{
 		@Override
@@ -201,9 +220,23 @@ public class PdfToTextPanel extends BasePanel<ApplicationModelBean>
 				if (file != null)
 				{
 					getModelObject().setSelectedPdfFile(file);
-					appendLog("Selected PDF file: " + file.getName());
-					new PdfProcessingWorker(file).execute();
+					JOptionPane.showMessageDialog(PdfToTextPanel.this,
+						"PDF file '" + file.getAbsolutePath()
+							+ "' successfully imported. Ready for OCR processing!");
 				}
+			}
+		}
+	}
+
+	private class StartOcrProcessButtonListener implements ActionListener
+	{
+		@Override
+		public void actionPerformed(ActionEvent e)
+		{
+			File file = getModelObject().getSelectedPdfFile();
+			if (file != null)
+			{
+				new PdfProcessingWorker(file).execute();
 			}
 		}
 	}
@@ -254,9 +287,56 @@ public class PdfToTextPanel extends BasePanel<ApplicationModelBean>
 			}
 			File outputDir = DirectoryFactory.newDirectory(userTempDir, "pdf-to-text");
 			String selectedLanguageCode = getSelectedLanguageCode();
-			ConversionResult conversionResult = PdfToTextExtensions.convertPdfToTextfile(pdfFile,
-				outputDir, selectedLanguageCode);
+			String pdfFileName = pdfFile.getName();
+			String initialFileName = pdfFile.getAbsolutePath();
+			Map<Character, String> replacementMap = new HashMap<>();
+			replacementMap.put(' ', "_");
+			replacementMap.put('.', "-");
+			String sanitizedFilename = FilenameExtensions.sanitizeFilename(pdfFileName,
+				replacementMap);
+			ConversionResult conversionResult;
+			if (!pdfFileName.equals(sanitizedFilename))
+			{
+				log.info("original file name '{}' is not normalized for tesseract processing.",
+					pdfFileName);
+				log.info("will be temporary renamed to new name '{}' ", sanitizedFilename);
+				File parentFile = pdfFile.getParentFile();
+				File normalizedFileNamePdfFile = new File(parentFile, sanitizedFilename);
+				boolean fileRenamed = false;
+				fileRenamed = RenameFileExtensions.renameFile(pdfFile, normalizedFileNamePdfFile,
+					true);
+				if (fileRenamed)
+				{
+					log.info("File '{}' is temporary renamed to '{}'", pdfFileName,
+						sanitizedFilename);
+				}
+				else
+				{
+					log.info("File '{}' is not temporary renamed", pdfFileName);
+				}
+				conversionResult = PdfToTextExtensions.convertPdfToTextfile(
+					normalizedFileNamePdfFile, outputDir, selectedLanguageCode);
+				pdfFile = new File(parentFile, pdfFileName);
+				fileRenamed = RenameFileExtensions.renameFile(normalizedFileNamePdfFile, pdfFile,
+					true);
+				if (fileRenamed)
+				{
+					log.info("File '{}' is renamed back to originally name '{}'", sanitizedFilename,
+						pdfFileName);
+				}
+				else
+				{
+					log.info("File '{}' is not renamed back to originally name '{}'",
+						sanitizedFilename, pdfFileName);
+				}
+			}
+			else
+			{
+				conversionResult = PdfToTextExtensions.convertPdfToTextfile(pdfFile, outputDir,
+					selectedLanguageCode);
+			}
 			appendLog("PDF conversion complete.");
+			getModelObject().setConversionResult(conversionResult);
 			return ReadFileExtensions.fromFile(conversionResult.getResultTextFile());
 		}
 	}
@@ -285,6 +365,8 @@ public class PdfToTextPanel extends BasePanel<ApplicationModelBean>
 						appendLog("Text exported to file: " + file.getName());
 						JOptionPane.showMessageDialog(PdfToTextPanel.this,
 							"Text exported successfully!");
+						textArea.setText("");
+						logTextArea.setText("");
 					}
 					catch (IOException ex)
 					{

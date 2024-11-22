@@ -4,6 +4,12 @@
 Version 1.2.0-SNAPSHOT
 -------------
 
+### Changed
+
+- Upgraded Gradle to version 8.11.1
+- Updated `silly-io` dependency to version 3.5
+- Improved OCR processing for non-normalized file names
+
 
 Version 1.1.0
 -------------
