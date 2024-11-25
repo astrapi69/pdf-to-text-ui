@@ -1,6 +1,12 @@
 ## Change log
 ----------------------
 
+Version 1.3.0-SNAPSHOT
+-------------
+
+## [Unreleased]
+
+
 Version 1.2.0
 -------------
 
@@ -12,8 +18,6 @@ Version 1.2.0
 
 Version 1.1.0
 -------------
-
-## [Unreleased]
 
 ### Added
 - Installation script for Tesseract OCR on Linux using Bash
