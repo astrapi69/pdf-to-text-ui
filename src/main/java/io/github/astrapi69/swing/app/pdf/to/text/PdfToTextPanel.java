@@ -31,9 +31,7 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintStream;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import javax.swing.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
@@ -288,12 +286,8 @@ public class PdfToTextPanel extends BasePanel<ApplicationModelBean>
 			File outputDir = DirectoryFactory.newDirectory(userTempDir, "pdf-to-text");
 			String selectedLanguageCode = getSelectedLanguageCode();
 			String pdfFileName = pdfFile.getName();
-			String initialFileName = pdfFile.getAbsolutePath();
-			Map<Character, String> replacementMap = new HashMap<>();
-			replacementMap.put(' ', "_");
-			replacementMap.put('.', "-");
 			String sanitizedFilename = FilenameExtensions.sanitizeFilename(pdfFileName,
-				replacementMap);
+				FilenameExtensions.getCharacterFileReplacementMap());
 			ConversionResult conversionResult;
 			if (!pdfFileName.equals(sanitizedFilename))
 			{
@@ -302,7 +296,8 @@ public class PdfToTextPanel extends BasePanel<ApplicationModelBean>
 				log.info("will be temporary renamed to new name '{}' ", sanitizedFilename);
 				File parentFile = pdfFile.getParentFile();
 				File normalizedFileNamePdfFile = new File(parentFile, sanitizedFilename);
-				boolean fileRenamed = false;
+				boolean fileRenamed;
+				/* Rename the PDF file for ocr processing */
 				fileRenamed = RenameFileExtensions.renameFile(pdfFile, normalizedFileNamePdfFile,
 					true);
 				if (fileRenamed)
@@ -317,6 +312,7 @@ public class PdfToTextPanel extends BasePanel<ApplicationModelBean>
 				conversionResult = PdfToTextExtensions.convertPdfToTextfile(
 					normalizedFileNamePdfFile, outputDir, selectedLanguageCode);
 				pdfFile = new File(parentFile, pdfFileName);
+				// Rename back to originally file name
 				fileRenamed = RenameFileExtensions.renameFile(normalizedFileNamePdfFile, pdfFile,
 					true);
 				if (fileRenamed)

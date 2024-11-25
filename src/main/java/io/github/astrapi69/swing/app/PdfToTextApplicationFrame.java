@@ -100,12 +100,17 @@ public class PdfToTextApplicationFrame extends ApplicationPanelFrame<Application
 	}
 
 	/**
-	 * Factory method for create the plugin manager
+	 * Factory method for create a new {@link PluginManager} object
+	 *
+	 * @return the new created {@link PluginManager} object for this application
 	 */
 	protected PluginManager newPluginManager()
 	{
-		JarPluginManager pluginManager = new JarPluginManager(Paths.get("plugins"))
+		return new JarPluginManager(Paths.get("plugins"))
 		{
+			/**
+			 * {@inheritDoc}
+			 */
 			protected ExtensionFinder createExtensionFinder()
 			{
 				DefaultExtensionFinder extensionFinder = (DefaultExtensionFinder)super.createExtensionFinder();
@@ -113,6 +118,9 @@ public class PdfToTextApplicationFrame extends ApplicationPanelFrame<Application
 				return extensionFinder;
 			}
 
+			/**
+			 * {@inheritDoc}
+			 */
 			@Override
 			protected PluginRepository createPluginRepository()
 			{
@@ -121,6 +129,9 @@ public class PdfToTextApplicationFrame extends ApplicationPanelFrame<Application
 					.add(new JarPluginRepository(getPluginsRoot()));
 			}
 
+			/**
+			 * {@inheritDoc}
+			 */
 			@Override
 			protected PluginLoader createPluginLoader()
 			{
@@ -128,7 +139,6 @@ public class PdfToTextApplicationFrame extends ApplicationPanelFrame<Application
 			}
 
 		};
-		return pluginManager;
 	}
 
 	/**
