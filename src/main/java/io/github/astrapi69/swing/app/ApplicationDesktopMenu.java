@@ -118,7 +118,7 @@ public class ApplicationDesktopMenu extends BaseDesktopMenu
 					.copyright(
 						Messages.getString("InfoJPanel.copyright.value", "2024 Asterios Raptis"))
 					.labelVersion(Messages.getString("InfoJPanel.version.key", "Version:"))
-					.version(Messages.getString("InfoJPanel.version.value", "1.1.0"))
+					.version(Messages.getString("InfoJPanel.version.value", "1.2.0"))
 					.licence(Messages.getString("InfoJPanel.license.information.value",
 						"This Software is licensed under the MIT License"))
 					.build();
