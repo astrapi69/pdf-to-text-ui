@@ -137,8 +137,8 @@ public class PdfToTextPanel extends BasePanel<ApplicationModelBean>
 		clearEditorsButton.addActionListener(e -> {
 			textArea.setText("");
 			logTextArea.setText("");
-			getModelObject().setSelectedPdfFile(null);
-			getModelObject().setConversionResult(null);
+			clearProcessModelInfo();
+			updateButtonStates();
 		});
 
 		// Progress bar
@@ -156,6 +156,33 @@ public class PdfToTextPanel extends BasePanel<ApplicationModelBean>
 		controlPanel.add(exportButton);
 		controlPanel.add(clearEditorsButton);
 		controlPanel.add(progressBar);
+		updateButtonStates();
+	}
+
+	private void clearProcessModelInfo()
+	{
+		getModelObject().setSelectedPdfFile(null);
+		getModelObject().setConversionResult(null);
+	}
+
+	private void updateButtonStates()
+	{
+		ApplicationModelBean modelObject = getModelObject();
+
+		// Enable Import Button (always enabled)
+		importButton.setEnabled(modelObject.getSelectedPdfFile() == null);
+
+		// Enable Start OCR Process Button only if a PDF file is selected
+		startOcrProcessButton.setEnabled(
+			modelObject.getSelectedPdfFile() != null && modelObject.getConversionResult() == null);
+
+		// Enable Export Button only if there is text in the text area
+		exportButton.setEnabled(!textArea.getText().isEmpty());
+
+		// Clear Editors Button is always enabled
+		boolean enabled = !(textArea.getText().length() == 0
+			&& logTextArea.getText().length() == 0);
+		clearEditorsButton.setEnabled(enabled);
 	}
 
 	/**
@@ -218,9 +245,21 @@ public class PdfToTextPanel extends BasePanel<ApplicationModelBean>
 				if (file != null)
 				{
 					getModelObject().setSelectedPdfFile(file);
-					JOptionPane.showMessageDialog(PdfToTextPanel.this,
+					updateButtonStates();
+					Object[] options = { "Start OCR Process", "OK" };
+					int dialogOption = JOptionPane.showOptionDialog(PdfToTextPanel.this,
 						"PDF file '" + file.getAbsolutePath()
-							+ "' successfully imported. Ready for OCR processing!");
+							+ "' successfully imported. Ready for OCR processing!",
+						"Import PDF file", JOptionPane.YES_NO_OPTION,
+						JOptionPane.INFORMATION_MESSAGE, null, options, options[0]);
+					if (dialogOption == JOptionPane.YES_OPTION)
+					{
+						File selectedPdfFile = getModelObject().getSelectedPdfFile();
+						if (selectedPdfFile != null)
+						{
+							new PdfProcessingWorker(selectedPdfFile).execute();
+						}
+					}
 				}
 			}
 		}
@@ -246,6 +285,9 @@ public class PdfToTextPanel extends BasePanel<ApplicationModelBean>
 		public PdfProcessingWorker(File pdfFile)
 		{
 			this.pdfFile = pdfFile;
+			updateButtonStates();
+			PdfToTextPanel.this.startOcrProcessButton.setEnabled(false);
+			PdfToTextPanel.this.clearEditorsButton.setEnabled(false);
 		}
 
 		@Override
@@ -256,6 +298,7 @@ public class PdfToTextPanel extends BasePanel<ApplicationModelBean>
 			try
 			{
 				textArea.setText(get());
+				updateButtonStates();
 				appendLog("PDF processed successfully.");
 			}
 			catch (Exception e)
@@ -363,6 +406,7 @@ public class PdfToTextPanel extends BasePanel<ApplicationModelBean>
 							"Text exported successfully!");
 						textArea.setText("");
 						logTextArea.setText("");
+						clearProcessModelInfo();
 					}
 					catch (IOException ex)
 					{
@@ -371,6 +415,7 @@ public class PdfToTextPanel extends BasePanel<ApplicationModelBean>
 							"Error exporting text: " + ex.getMessage());
 					}
 				}
+				updateButtonStates();
 			}
 		}
 	}

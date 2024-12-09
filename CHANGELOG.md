@@ -5,7 +5,18 @@ Version 1.3.0-SNAPSHOT
 -------------
 
 ## [Unreleased]
+### Added
+- Dynamic button state management in `PdfToTextPanel`:
+    - Import button is always enabled.
+    - Start OCR Process button is enabled only when a PDF file is selected.
+    - Export button is enabled only when the text area contains text.
+    - Clear Editors button remains always enabled.
 
+### Changed
+- Updated action listeners in `PdfToTextPanel` to trigger state updates, ensuring buttons reflect the current application state.
+
+### Fixed
+- Buttons no longer remain enabled when actions cannot be performed, improving user interaction and preventing invalid operations.
 
 Version 1.2.0
 -------------
