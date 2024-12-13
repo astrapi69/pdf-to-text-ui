@@ -23,7 +23,6 @@ jar {
                 "Build-OS"              : "${System.properties['os.name']} ${System.properties['os.arch']} ${System.properties['os.version']}")
     }
 }
-
 // Task to sign jar
 tasks.register("signJar", Jar) {
     mustRunAfter(withAllDependendiesJar)
@@ -56,7 +55,7 @@ tasks.register("signJar", Jar) {
                 'IzPackInstaller can not be created because it depends on signed jar.')
     }
 }
-
+// Task to create jar with all dependencies
 tasks.register("withAllDependendiesJar", Jar) {
     setDuplicatesStrategy(DuplicatesStrategy.EXCLUDE)
     manifest.from jar.manifest
