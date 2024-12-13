@@ -1,10 +1,9 @@
 ## Change log
 ----------------------
 
-Version 1.3.0-SNAPSHOT
+Version 1.3.0
 -------------
 
-## [Unreleased]
 ### Added
 - Dynamic button state management in `PdfToTextPanel`:
     - Import button is always enabled.
@@ -13,6 +12,7 @@ Version 1.3.0-SNAPSHOT
     - Clear Editors button remains always enabled.
 
 ### Changed
+- Upgraded Gradle to version 8.12-rc-1
 - Updated action listeners in `PdfToTextPanel` to trigger state updates, ensuring buttons reflect the current application state.
 
 ### Fixed

@@ -18,7 +18,9 @@ The PDF-to-Text UI is a Java Swing-based application designed to extract text fr
 - **Toolbar**:
     - **Select OCR Language**: Dropdown menu for selecting the desired OCR language.
     - **Import PDF**: Button to open a file chooser dialog for selecting a PDF file.
+    - **Start the OCR Process**: Button that starts the OCR processing.
     - **Export to File**: Button to export the extracted text to a file.
+    - **Clear PDF and Editors**: Button to clear the selected PDF file if selected and clears all text Editors
 - **Text Area**:
     - A large, editable space to display the extracted text.
 - **Logging Panel**:
@@ -31,16 +33,19 @@ The PDF-to-Text UI is a Java Swing-based application designed to extract text fr
 2. **Import a PDF**:
     - Click the **Import PDF** button.
     - A file chooser dialog will appear. Navigate to the desired PDF file and click **Open**.
+    - A dialog will appear with:
+      - **Start OCR Process**: Processes the file immediately.
+      - **OK**: Confirms file selection for later processing.
 
-3. **Extract Text**:
-    - The application will process the PDF and display the extracted text in the text area.
+3. **Start OCR Process**:
+    - Click **Start OCR Process**. The application will process the PDF and display the extracted text in the text area.
 
-4. **Edit Text (Optional)**:
-    - The text displayed in the text area can be manually edited if needed.
-
-5. **Export to File**:
+4. **Export to File**:
     - Click the **Export to File** button.
     - Choose a location to save the file, specify a file name, and click **Save**.
+
+5. **Clear PDF and Editors(Optional)**:
+    - Clears the selected PDF file if selected and clears all text Editors
 
 #### Troubleshooting
 - If no plugins are found, ensure the plugin directory is correctly set up and contains valid plugins.
@@ -55,7 +60,7 @@ The logging panel at the bottom displays messages for:
 - Status updates
 
 #### Requirements
-- **Java Version**: Ensure Java 8 or higher is installed.
+- **Java Version**: Ensure Java 21 or higher is installed.
 - **Dependencies**: Apache PDFBox, Tesseract OCR, and related libraries.
 
 #### Future Enhancements

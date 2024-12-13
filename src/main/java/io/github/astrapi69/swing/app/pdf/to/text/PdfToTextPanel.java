@@ -43,9 +43,9 @@ import io.github.astrapi69.file.rename.RenameFileExtensions;
 import io.github.astrapi69.file.system.SystemFileExtensions;
 import io.github.astrapi69.io.file.FileExtension;
 import io.github.astrapi69.io.file.FilenameExtensions;
-import io.github.astrapi69.model.BaseModel;
 import io.github.astrapi69.model.api.IModel;
 import io.github.astrapi69.swing.app.ApplicationModelBean;
+import io.github.astrapi69.swing.app.Messages;
 import io.github.astrapi69.swing.base.BasePanel;
 import io.github.astrapi69.swing.io.TeeOutputStream;
 import io.github.astrapi69.swing.io.TextAreaOutputStream;
@@ -82,11 +82,6 @@ public class PdfToTextPanel extends BasePanel<ApplicationModelBean>
 		super(model);
 	}
 
-	public PdfToTextPanel()
-	{
-		this(BaseModel.of(ApplicationModelBean.builder().build()));
-	}
-
 	/**
 	 * {@inheritDoc}
 	 */
@@ -94,7 +89,6 @@ public class PdfToTextPanel extends BasePanel<ApplicationModelBean>
 	protected void onInitializeComponents()
 	{
 		super.onInitializeComponents();
-		ApplicationModelBean modelObject = getModelObject();
 
 		// Initialize language selection combo box
 		List<String> tesseractSupportedLanguages = ImagePdfToTextExtensions
@@ -103,7 +97,7 @@ public class PdfToTextPanel extends BasePanel<ApplicationModelBean>
 			.filterLanguagesByCodes(tesseractSupportedLanguages);
 
 		languageComboBox = new JComboBox<>(ListExtensions.toArray(supportedLanguages));
-		languageComboBox.setSelectedItem(supportedLanguages.get(0)); // Set default language
+		languageComboBox.setSelectedItem(supportedLanguages.getFirst()); // Set default language
 
 		// Text area for displaying extracted text
 		textArea = new JTextArea(20, 50);
@@ -124,16 +118,16 @@ public class PdfToTextPanel extends BasePanel<ApplicationModelBean>
 		System.setErr(new PrintStream(new TeeOutputStream(System.err, textAreaOutputStream)));
 
 		// Import and Export buttons
-		importButton = new JButton("Import PDF");
+		importButton = new JButton(Messages.getString("global.button.import.pdf.file"));
 		importButton.addActionListener(new ImportButtonListener());
 
-		startOcrProcessButton = new JButton("Start OCR Process");
+		startOcrProcessButton = new JButton(Messages.getString("global.button.start.ocr.process"));
 		startOcrProcessButton.addActionListener(new StartOcrProcessButtonListener());
 
-		exportButton = new JButton("Export to File");
+		exportButton = new JButton(Messages.getString("global.button.export.to.text.file"));
 		exportButton.addActionListener(new ExportButtonListener());
 
-		clearEditorsButton = new JButton("Clear PDF and Editors");
+		clearEditorsButton = new JButton(Messages.getString("global.button.clear.all.editors"));
 		clearEditorsButton.addActionListener(e -> {
 			textArea.setText("");
 			logTextArea.setText("");
@@ -149,7 +143,7 @@ public class PdfToTextPanel extends BasePanel<ApplicationModelBean>
 		// Control panel
 		controlPanel = new JPanel();
 
-		controlPanel.add(new JLabel("Select OCR Language:"));
+		controlPanel.add(new JLabel(Messages.getString("global.label.select.ocr.language")));
 		controlPanel.add(languageComboBox);
 		controlPanel.add(importButton);
 		controlPanel.add(startOcrProcessButton);
@@ -180,28 +174,8 @@ public class PdfToTextPanel extends BasePanel<ApplicationModelBean>
 		exportButton.setEnabled(!textArea.getText().isEmpty());
 
 		// Clear Editors Button is always enabled
-		boolean enabled = !(textArea.getText().length() == 0
-			&& logTextArea.getText().length() == 0);
+		boolean enabled = !(textArea.getText().isEmpty() && logTextArea.getText().isEmpty());
 		clearEditorsButton.setEnabled(enabled);
-	}
-
-	/**
-	 * Finds an {@link OcrLanguage} by its language code.
-	 *
-	 * @param code
-	 *            the Tesseract language code
-	 * @return the corresponding {@link OcrLanguage}, or {@code null} if not found
-	 */
-	private static OcrLanguage getLanguageByCode(String code)
-	{
-		for (OcrLanguage language : OcrLanguage.values())
-		{
-			if (language.getCode().equals(code))
-			{
-				return language;
-			}
-		}
-		return null;
 	}
 
 	@Override
