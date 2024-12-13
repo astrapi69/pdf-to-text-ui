@@ -27,32 +27,30 @@ jar {
 // Task to sign jar
 tasks.register("signJar", Jar) {
     mustRunAfter("withAllDependendiesJar")
-    doLast {
-        if (releaseVersion || createIzPackInstaller) {
-            def pkAlias = project.findProperty('keyAlias') ?: 'defaultAlias'
-            def keystoreFileName = project.findProperty('storeFile') ?: 'defaultKeystore.jks'
-            def storePassword = project.findProperty('storePassword') ?: 'missing-store-password'
-            def keyPassword = project.findProperty('keyPassword') ?: 'missing-key-password'
-            def keystoreType = project.findProperty('storeType') ?: 'JKS'
-            def libsFilePath = new File(buildDirectory, 'libs')
-            def destDir = new File(buildDirectory, 'signed')
-            destDir.mkdirs()
-            libsFilePath.listFiles()?.each { file ->
-                ant.signjar(
-                        jar: file,
-                        destDir: destDir,
-                        alias: pkAlias,
-                        storetype: keystoreType,
-                        keystore: keystoreFileName,
-                        storepass: storePassword,
-                        keypass: keyPassword,
-                        verbose: true,
-                        preservelastmodified: true
-                )
-            }
-        } else {
-            println('Created jar file is not signed. IzPackInstaller cannot be created because it depends on signed jar.')
+    if (releaseVersion || createIzPackInstaller) {
+        def pkAlias = project.findProperty('keyAlias') ?: 'defaultAlias'
+        def keystoreFileName = project.findProperty('storeFile') ?: 'defaultKeystore.jks'
+        def storePassword = project.findProperty('storePassword') ?: 'missing-store-password'
+        def keyPassword = project.findProperty('keyPassword') ?: 'missing-key-password'
+        def keystoreType = project.findProperty('storeType') ?: 'JKS'
+        def libsFilePath = new File(buildDirectory, 'libs')
+        def destDir = new File(buildDirectory, 'signed')
+        destDir.mkdirs()
+        libsFilePath.listFiles()?.each { file ->
+            ant.signjar(
+                    jar: file,
+                    destDir: destDir,
+                    alias: pkAlias,
+                    storetype: keystoreType,
+                    keystore: keystoreFileName,
+                    storepass: storePassword,
+                    keypass: keyPassword,
+                    verbose: true,
+                    preservelastmodified: true
+            )
         }
+    } else {
+        println('Created jar file is not signed. IzPackInstaller cannot be created because it depends on signed jar.')
     }
 }
 
