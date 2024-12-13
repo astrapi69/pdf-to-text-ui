@@ -57,7 +57,6 @@ tasks.register("signJar", Jar) {
     }
 }
 
-
 tasks.register("withAllDependendiesJar", Jar) {
     setDuplicatesStrategy(DuplicatesStrategy.EXCLUDE)
     manifest.from jar.manifest
