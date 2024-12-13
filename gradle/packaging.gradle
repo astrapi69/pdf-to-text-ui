@@ -26,33 +26,37 @@ jar {
 
 // Task to sign jar
 tasks.register("signJar", Jar) {
-    mustRunAfter("withAllDependendiesJar")
+    mustRunAfter(withAllDependendiesJar)
     if (releaseVersion || createIzPackInstaller) {
-        def pkAlias = project.findProperty('keyAlias') ?: 'defaultAlias'
-        def keystoreFileName = project.findProperty('storeFile') ?: 'defaultKeystore.jks'
-        def storePassword = project.findProperty('storePassword') ?: 'missing-store-password'
-        def keyPassword = project.findProperty('keyPassword') ?: 'missing-key-password'
-        def keystoreType = project.findProperty('storeType') ?: 'JKS'
-        def libsFilePath = new File(buildDirectory, 'libs')
-        def destDir = new File(buildDirectory, 'signed')
-        destDir.mkdirs()
-        libsFilePath.listFiles()?.each { file ->
+        def pkAlias = project.findProperty(keyAlias) ?: 'missing-alias'
+        def keystoreFileName = project.findProperty(storeFile) ?: 'missing-keystore.jks'
+        def storePassword = project.findProperty(storePassword) ?: 'missing-store-password'
+        def keyPassword = project.findProperty(keyPassword) ?: 'missing-key-password'
+        def keystoreType = project.findProperty(storeType) ?: 'JKS'
+        def libsFilePath = "$buildDirectory/libs"
+        def libFiles = files { file(libsFilePath).listFiles() }
+        def destDir = "$buildDirectory/signed"
+        def signedDir = new File(destDir)
+        signedDir.mkdirs()
+        libFiles.each {file ->
             ant.signjar(
                     jar: file,
-                    destDir: destDir,
-                    alias: pkAlias,
-                    storetype: keystoreType,
-                    keystore: keystoreFileName,
-                    storepass: storePassword,
-                    keypass: keyPassword,
+                    destDir: "$destDir",
+                    alias: "$pkAlias",
+                    storetype: "$keystoreType",
+                    keystore: "$keystoreFileName",
+                    storepass: "$storePassword",
+                    keypass: "$keyPassword",
                     verbose: true,
                     preservelastmodified: true
             )
         }
     } else {
-        println('Created jar file is not signed. IzPackInstaller cannot be created because it depends on signed jar.')
+        println('Created jar file is not signed.\n' +
+                'IzPackInstaller can not be created because it depends on signed jar.')
     }
 }
+
 
 tasks.register("withAllDependendiesJar", Jar) {
     setDuplicatesStrategy(DuplicatesStrategy.EXCLUDE)
