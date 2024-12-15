@@ -4,6 +4,25 @@
 Version 1.4.0-SNAPSHOT
 -------------
 
+## [Unreleased]
+## Added
+- **Task**: `prepareIzpackInstallerJars`
+  - Handles JAR preparation and signing.
+  - Depends on `withAllDependendiesJar`.
+  - Automatically triggers `izPackCreateInstaller` after signing.
+- **Helper Method**: `signJarsWithAnt`
+  - Centralized logic for signing JAR files using Ant.
+
+## Changed
+- **Dependency Management**:
+  - Updated `commons-text-version` to `1.13.0` in `gradle/libs.versions.toml`.
+
+## Fixed
+- Improved validation for keystore configuration:
+  - Ensures the keystore file exists before signing.
+  - Added detailed debugging messages for signing properties and process.
+
+This update streamlines the workflow for creating IzPack installers by ensuring proper preparation and signing of JAR files.
 
 Version 1.3.0
 -------------
