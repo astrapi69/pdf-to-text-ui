@@ -37,7 +37,7 @@ tasks.register("signJar", Jar) {
         def destDir = "$buildDirectory/signed"
         def signedDir = new File(destDir)
         signedDir.mkdirs()
-        libFiles.each {file ->
+        libFiles.each { file ->
             ant.signjar(
                     jar: file,
                     destDir: "$destDir",
@@ -57,6 +57,8 @@ tasks.register("signJar", Jar) {
 }
 // Task to create jar with all dependencies
 tasks.register("withAllDependendiesJar", Jar) {
+    // Ensure the `build` task runs before this task
+    dependsOn build
     setDuplicatesStrategy(DuplicatesStrategy.EXCLUDE)
     manifest.from jar.manifest
     archiveClassifier.set("all")
@@ -65,4 +67,100 @@ tasks.register("withAllDependendiesJar", Jar) {
     }
     exclude("META-INF/*.SF", "META-INF/*.DSA", "META-INF/*.RSA")
     with jar
+}
+
+// Helper method to handle JAR signing logic
+void signJarsWithAnt(File libsFilePath, File destDir, String pkAlias, String keystoreFileName, String storePassword, String keyPassword, String keystoreType) {
+    def libFiles = libsFilePath.listFiles()
+    destDir.mkdirs()
+    libFiles.each { file ->
+        println("Processing JAR: ${file.name}")
+        println(" - Absolute path: ${file.absolutePath}")
+        println(" - File size: ${file.length()} bytes")
+        ant.signjar(
+                jar: file,
+                destDir: destDir,
+                alias: pkAlias,
+                storetype: keystoreType,
+                keystore: keystoreFileName,
+                storepass: storePassword,
+                keypass: keyPassword,
+                verbose: true,
+                preservelastmodified: true
+        )
+        println("Signed JAR saved to: ${new File(destDir, file.name).absolutePath}")
+    }
+}
+
+// Main task
+tasks.register("prepareIzpackInstallerJars", Jar) {
+    // Ensure the `withAllDependendiesJar` task runs before this task
+    dependsOn withAllDependendiesJar
+
+    if (releaseVersion || createIzPackInstaller) {
+        // Resolve signing properties
+        def pkAlias = project.findProperty('keyAlias') ?: 'missing-alias'
+        def keystoreFileName = project.findProperty('storeFile') ?: 'missing-keystore.jks'
+        def storePassword = project.findProperty('storePassword') ?: 'missing-store-password'
+        def keyPassword = project.findProperty('keyPassword') ?: 'missing-key-password'
+        def keystoreType = project.findProperty('storeType') ?: 'JKS'
+
+        // Print resolved properties for debugging
+        println("Signing Properties:")
+        println(" - Key Alias: $pkAlias")
+        println(" - Keystore File: $keystoreFileName")
+        println(" - Store Password: $storePassword")
+        println(" - Key Password: $keyPassword")
+        println(" - Keystore Type: $keystoreType")
+
+        // Define paths
+        def libsFilePath = file("$buildDirectory/libs")
+        def destDir = new File("$buildDirectory/signed")
+
+        // Ensure directories exist
+        if (!libsFilePath.exists() || !libsFilePath.isDirectory()) {
+            throw new GradleException("The directory $libsFilePath does not exist or is not a directory. Ensure the `build` task generates the JARs.")
+        }
+
+        // Print debug information
+        println("Signing JARs in directory: $libsFilePath")
+        println("Destination directory for signed JARs: $destDir")
+
+        // Create destination directory
+        destDir.mkdirs()
+
+        // Find JARs and sign them
+        def libFiles = libsFilePath.listFiles().findAll { it.name.endsWith('.jar') }
+        if (libFiles.isEmpty()) {
+            throw new GradleException("No JAR files found in $libsFilePath. Ensure the `build` task generates the JARs.")
+        } else {
+            // print libFiles
+            libFiles.each { file ->
+                println(file.name)
+            }
+        }
+        println("Verifying keystore file...")
+        def pkAliasString = project.findProperty(pkAlias)
+        def keystoreFilePath = project.findProperty(keystoreFileName)
+        def storePasswordString = project.findProperty(storePassword)
+        def keyPasswordString = project.findProperty(keyPassword)
+        def keystoreTypeString = project.findProperty(keystoreType)
+
+        println("Keystore file path: $keystoreFilePath")
+        def keystoreFile = file(keystoreFilePath)
+        if (!keystoreFile.exists()) {
+            throw new GradleException("Keystore file not found: $keystoreFileName")
+        } else {
+            println("Keystore file exists: $keystoreFile.name")
+        }
+
+        // Call helper method to sign JARs
+        signJarsWithAnt(libsFilePath, destDir,
+                pkAliasString, keystoreFilePath, storePasswordString, keyPasswordString, keystoreTypeString)
+
+    } else {
+        println('Created JAR file is not signed.\n' +
+                'IzPackInstaller cannot be created because it depends on signed JAR.')
+    }
+    finalizedBy tasks.named("izPackCreateInstaller")
 }
