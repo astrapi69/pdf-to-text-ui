@@ -1,12 +1,145 @@
 import java.text.SimpleDateFormat
 
-// Resolve properties during configuration
+/**
+ * Variables for configuring project build properties.
+ *
+ * <p>These variables are used to determine build behavior, set metadata, and provide contextual information
+ * about the runtime environment.</p>
+ *
+ * <h3>Variables</h3>
+ * <ul>
+ *   <li><b>mainClassName</b>: Specifies the fully qualified name of the application's main class.
+ *     <ul>
+ *       <li>Value is resolved from the `mainClass` project property.</li>
+ *       <li>Default: `io.github.astrapi69.swing.app.StartApplication`.</li>
+ *     </ul>
+ *   </li>
+ *   <li><b>createIzPackInstallerStringProperty</b>: A string property indicating whether to create an IzPack installer.
+ *     <ul>
+ *       <li>Value is resolved from the `createIzPackInstaller` project property.</li>
+ *       <li>Default: `false`.</li>
+ *     </ul>
+ *   </li>
+ *   <li><b>createIzPackInstaller</b>: Boolean flag derived from `createIzPackInstallerStringProperty`.
+ *     <ul>
+ *       <li>Indicates whether the IzPack installer creation task should be executed.</li>
+ *     </ul>
+ *   </li>
+ *   <li><b>releaseVersion</b>: Boolean flag indicating whether the current build is a release version.
+ *     <ul>
+ *       <li>Determined by checking if the project version ends with `SNAPSHOT`.</li>
+ *       <li>`true` for release versions, `false` otherwise.</li>
+ *     </ul>
+ *   </li>
+ *   <li><b>buildDirectory</b>: File object representing the directory where build artifacts are generated.
+ *     <ul>
+ *       <li>Value is derived from the project's layout configuration.</li>
+ *     </ul>
+ *   </li>
+ *   <li><b>buildJdk</b>: String providing details about the Java runtime used for the build.
+ *     <ul>
+ *       <li>Includes Java version, vendor, and VM version.</li>
+ *       <li>Example: `17 (Oracle Corporation 17.0.8+9)`.</li>
+ *     </ul>
+ *   </li>
+ *   <li><b>buildOs</b>: String providing details about the operating system.
+ *     <ul>
+ *       <li>Includes OS name, architecture, and version.</li>
+ *       <li>Example: `Windows 10 amd64 10.0`.</li>
+ *     </ul>
+ *   </li>
+ * </ul>
+ *
+ * <h3>Notes</h3>
+ * <ul>
+ *   <li>The `mainClassName` variable is critical for setting the `Main-Class` attribute in the JAR manifest.</li>
+ *   <li>`createIzPackInstaller` is used to control whether IzPack-related tasks are included in the build.</li>
+ *   <li>The `releaseVersion` variable helps distinguish release builds from development builds.</li>
+ *   <li>`buildJdk` and `buildOs` are used for adding metadata to the JAR manifest.</li>
+ * </ul>
+ */
 def mainClassName = project.findProperty('mainClass') ?: 'io.github.astrapi69.swing.app.StartApplication'
 def createIzPackInstallerStringProperty = project.findProperty('createIzPackInstaller') ?: 'false'
 def createIzPackInstaller = createIzPackInstallerStringProperty.toBoolean()
 def releaseVersion = !version.endsWith("SNAPSHOT")
 def buildDirectory = layout.buildDirectory.get().asFile
+def buildJdk = "${System.properties['java.version']} (${System.properties['java.vendor']} ${System.properties['java.vm.version']})"
+def buildOs = "${System.properties['os.name']} ${System.properties['os.arch']} ${System.properties['os.version']}"
 
+/**
+ * Configures the JAR task to include detailed metadata in the manifest file.
+ *
+ * <p>This configuration adds custom attributes to the JAR's manifest, providing
+ * important information about the application, build environment, and project settings.</p>
+ *
+ * <h3>Manifest Attributes</h3>
+ * The following attributes are included in the JAR manifest:
+ * <ul>
+ *   <li><b>Name</b>: The name of the project.
+ *     <ul>
+ *       <li>Value: `project.name`.</li>
+ *     </ul>
+ *   </li>
+ *   <li><b>Manifest-Version</b>: The version of the project.
+ *     <ul>
+ *       <li>Value: `project.version`.</li>
+ *     </ul>
+ *   </li>
+ *   <li><b>Main-Class</b>: The fully qualified name of the application's main class.
+ *     <ul>
+ *       <li>Value: `mainClassName`.</li>
+ *     </ul>
+ *   </li>
+ *   <li><b>Implementation-Title</b>: A title combining the group package and root project name.
+ *     <ul>
+ *       <li>Value: `"$groupPackage.$rootProject.name"`.</li>
+ *     </ul>
+ *   </li>
+ *   <li><b>Implementation-Version</b>: The version of the project.
+ *     <ul>
+ *       <li>Value: `project.version`.</li>
+ *     </ul>
+ *   </li>
+ *   <li><b>Implementation-Vendor</b>: The name of the project leader.
+ *     <ul>
+ *       <li>Value: `projectLeaderName`.</li>
+ *     </ul>
+ *   </li>
+ *   <li><b>Created-By</b>: The version of Gradle used to build the project.
+ *     <ul>
+ *       <li>Value: `"Gradle ${gradle.gradleVersion}"`.</li>
+ *     </ul>
+ *   </li>
+ *   <li><b>Built-By</b>: The name of the project leader.
+ *     <ul>
+ *       <li>Value: `projectLeaderName`.</li>
+ *     </ul>
+ *   </li>
+ *   <li><b>Build-Timestamp</b>: The timestamp when the build was created, formatted as ISO 8601.
+ *     <ul>
+ *       <li>Value: Current date and time, e.g., `"yyyy-MM-dd'T'HH:mm:ss.SSSZ"`.</li>
+ *     </ul>
+ *   </li>
+ *   <li><b>Build-Jdk</b>: The Java runtime version, vendor, and VM version used for the build.
+ *     <ul>
+ *       <li>Value: `buildJdk`.</li>
+ *     </ul>
+ *   </li>
+ *   <li><b>Build-OS</b>: The operating system name, architecture, and version used for the build.
+ *     <ul>
+ *       <li>Value: `buildOs`.</li>
+ *     </ul>
+ *   </li>
+ * </ul>
+ *
+ * <h3>Notes</h3>
+ * <ul>
+ *   <li>The `Main-Class` attribute is critical for ensuring the JAR is executable.</li>
+ *   <li>Metadata such as `Build-Timestamp`, `Build-Jdk`, and `Build-OS` provides valuable
+ *       debugging and versioning information for deployments.</li>
+ *   <li>This configuration ensures the resulting JAR is self-contained with meaningful metadata.</li>
+ * </ul>
+ */
 jar {
     manifest {
         attributes(
@@ -19,12 +152,72 @@ jar {
                 "Created-By"            : "Gradle ${gradle.gradleVersion}",
                 "Built-By"              : "$projectLeaderName",
                 "Build-Timestamp"       : new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ").format(new Date()),
-                "Build-Jdk"             : "${System.properties['java.version']} (${System.properties['java.vendor']} ${System.properties['java.vm.version']})",
-                "Build-OS"              : "${System.properties['os.name']} ${System.properties['os.arch']} ${System.properties['os.version']}")
+                "Build-Jdk"             : buildJdk,
+                "Build-OS"              : buildOs
+        )
     }
 }
-// Task to sign jar
+
+/**
+ * Gradle task to sign JAR files for release or IzPack installer creation.
+ *
+ * <p>This task signs all JAR files in the `libs` directory using the provided keystore
+ * properties and saves the signed JAR files to the `signed` directory. It depends on the
+ * successful execution of the `withAllDependendiesJar` task and only runs if signing is enabled
+ * via the `releaseVersion` or `createIzPackInstaller` flags.</p>
+ *
+ * <h3>Task Configuration</h3>
+ * <ul>
+ *   <li><b>Dependencies</b>: Configured to run after the `withAllDependendiesJar` task.</li>
+ *   <li><b>Signing Properties</b>: Resolves the following properties from the project configuration:
+ *     <ul>
+ *       <li><b>keyAlias</b>: Alias of the key used for signing (default: `missing-alias`).</li>
+ *       <li><b>storeFile</b>: Path to the keystore file (default: `missing-keystore.jks`).</li>
+ *       <li><b>storePassword</b>: Password for the keystore (default: `missing-store-password`).</li>
+ *       <li><b>keyPassword</b>: Password for the signing key (default: `missing-key-password`).</li>
+ *       <li><b>storeType</b>: Type of the keystore (default: `JKS`).</li>
+ *     </ul>
+ *   </li>
+ *   <li><b>Source Directory</b>: Processes all JAR files in the `libs` directory.</li>
+ *   <li><b>Destination Directory</b>: Saves signed JAR files in the `signed` directory under the build directory.</li>
+ * </ul>
+ *
+ * <h3>Execution Flow</h3>
+ * <ol>
+ *   <li>Checks whether signing is enabled via the `releaseVersion` or `createIzPackInstaller` flags.</li>
+ *   <li>Retrieves signing properties such as key alias, keystore file, and passwords.</li>
+ *   <li>Defines the source (`libs`) and destination (`signed`) directories.</li>
+ *   <li>Uses the helper method `signJarsWithAnt` to sign all JAR files in the source directory.</li>
+ *   <li>If signing is disabled, logs a message indicating that signing is skipped.</li>
+ * </ol>
+ *
+ * <h3>Helper Method</h3>
+ * <ul>
+ *   <li>The `signJarsWithAnt` method is invoked to handle the actual signing of JAR files
+ *       using Ant's `signjar` task. See its documentation for detailed behavior.</li>
+ * </ul>
+ *
+ * <h3>Notes</h3>
+ * <ul>
+ *   <li>The task is designed to be used in release builds or when creating an IzPack installer.</li>
+ *   <li>If the required signing properties are missing or incorrectly configured, the task will fail.</li>
+ *   <li>All signed JAR files are saved with the same names in the `signed` directory.</li>
+ *   <li>When signing is not enabled, a message is printed to indicate the dependency on signed JAR files for the IzPack installer.</li>
+ * </ul>
+ *
+ * <h3>Exclusions</h3>
+ * <ul>
+ *   <li>Cryptographic signature files in the JAR are excluded during signing to prevent conflicts.</li>
+ * </ul>
+ *
+ * <h3>Exceptions</h3>
+ * <ul>
+ *   <li><b>Exception</b>: Thrown if signing fails due to missing keystore, incorrect passwords, or invalid JAR files.</li>
+ * </ul>
+ */
 tasks.register("signJar", Jar) {
+    dependsOn build
+    dependsOn withAllDependendiesJar
     mustRunAfter(withAllDependendiesJar)
     if (releaseVersion || createIzPackInstaller) {
         def pkAlias = project.findProperty(keyAlias) ?: 'missing-alias'
@@ -55,7 +248,59 @@ tasks.register("signJar", Jar) {
                 'IzPackInstaller can not be created because it depends on signed jar.')
     }
 }
-// Task to create jar with all dependencies
+
+/**
+ * Gradle task to create a JAR file containing all runtime dependencies.
+ *
+ * <p>This task packages all runtime dependencies along with the project's compiled classes into a
+ * single JAR file. It ensures compatibility with environments requiring a "fat JAR" or "uber JAR"
+ * that includes all dependencies in one distributable artifact.</p>
+ *
+ * <h3>Task Configuration</h3>
+ * <ul>
+ *   <li><b>Dependencies</b>: Ensures the `build` task runs before this task to generate the base JAR file.</li>
+ *   <li><b>Duplicates Strategy</b>: Excludes duplicate entries in the resulting JAR file to avoid conflicts.</li>
+ *   <li><b>Manifest</b>: Merges the manifest of the base JAR file into the fat JAR.</li>
+ *   <li><b>Archive Classifier</b>: Sets the classifier for the output JAR file to `all`,
+ *       indicating it contains all dependencies.</li>
+ *   <li><b>Contents</b>: Includes all dependencies from the runtime classpath and
+ *       expands any JAR dependencies into their constituent files.</li>
+ *   <li><b>Exclusions</b>: Excludes cryptographic signature files to prevent runtime issues.</li>
+ *   <li><b>Base JAR Inclusion</b>: Incorporates the project's base JAR file into the fat JAR.</li>
+ * </ul>
+ *
+ * <h3>Execution Flow</h3>
+ * <ol>
+ *   <li>Runs the `build` task to ensure the base JAR file is available.</li>
+ *   <li>Sets the duplicates strategy to `EXCLUDE` to handle conflicts during JAR creation.</li>
+ *   <li>Merges the manifest of the base JAR file into the fat JAR file.</li>
+ *   <li>Defines the classifier for the output JAR file as `all`.</li>
+ *   <li>Includes dependencies from the runtime classpath, expanding JAR files into their contents.</li>
+ *   <li>Excludes cryptographic signature files (e.g., `META-INF/*.SF`, `META-INF/*.DSA`, `META-INF/*.RSA`).</li>
+ *   <li>Includes the contents of the base JAR file in the fat JAR.</li>
+ * </ol>
+ *
+ * <h3>Resulting JAR</h3>
+ * <ul>
+ *   <li>Output file: A single JAR file containing all runtime dependencies and project classes.</li>
+ *   <li>Classifier: The output JAR file is classified as `all` (e.g., `project-name-all.jar`).</li>
+ * </ul>
+ *
+ * <h3>Notes</h3>
+ * <ul>
+ *   <li>The task uses the runtime classpath to collect all project dependencies.</li>
+ *   <li>Cryptographic signature files are excluded to avoid potential conflicts during runtime.</li>
+ *   <li>This task is useful for creating distributable artifacts that do not require additional dependencies.</li>
+ * </ul>
+ *
+ * <h3>Exclusions</h3>
+ * The following files are excluded from the resulting JAR to avoid runtime issues:
+ * <ul>
+ *   <li><b>META-INF/*.SF</b>: Signature files.</li>
+ *   <li><b>META-INF/*.DSA</b>: Digital signature files.</li>
+ *   <li><b>META-INF/*.RSA</b>: RSA cryptographic files.</li>
+ * </ul>
+ */
 tasks.register("withAllDependendiesJar", Jar) {
     // Ensure the `build` task runs before this task
     dependsOn build
@@ -69,7 +314,72 @@ tasks.register("withAllDependendiesJar", Jar) {
     with jar
 }
 
-// Helper method to handle JAR signing logic
+/**
+ * Signs JAR files using Ant's `signjar` task.
+ *
+ * <p>This method processes all JAR files in the specified source directory,
+ * signing them with the provided keystore and saving the signed JARs to the
+ * destination directory. Detailed information about each JAR file and its
+ * signing status is printed to the console for debugging purposes.</p>
+ *
+ * <h3>Parameters</h3>
+ * <ul>
+ *   <li><b>libsFilePath</b>: Directory containing the JAR files to be signed.</li>
+ *   <li><b>destDir</b>: Directory where the signed JAR files will be saved.
+ *       The directory is created if it does not already exist.</li>
+ *   <li><b>pkAlias</b>: Alias of the key used for signing the JAR files.</li>
+ *   <li><b>keystoreFileName</b>: Path to the keystore file containing the signing key.</li>
+ *   <li><b>storePassword</b>: Password for accessing the keystore.</li>
+ *   <li><b>keyPassword</b>: Password for the signing key.</li>
+ *   <li><b>keystoreType</b>: Type of the keystore (e.g., `JKS`, `PKCS12`).</li>
+ * </ul>
+ *
+ * <h3>Execution Flow</h3>
+ * <ol>
+ *   <li>Retrieves all files in the source directory.</li>
+ *   <li>Ensures the destination directory exists by creating it if necessary.</li>
+ *   <li>Iterates over each file in the source directory:
+ *     <ul>
+ *       <li>Prints debugging information, including the file's name, size,
+ *           and absolute path.</li>
+ *       <li>Uses Ant's `signjar` task to sign the JAR file with the specified keystore.</li>
+ *       <li>Prints the path to the signed JAR file in the destination directory.</li>
+ *     </ul>
+ *   </li>
+ * </ol>
+ *
+ * <h3>Ant Task Configuration</h3>
+ * The following attributes are set for the Ant `signjar` task:
+ * <ul>
+ *   <li><b>jar</b>: The input JAR file to be signed.</li>
+ *   <li><b>destDir</b>: The directory where the signed JAR file is saved.</li>
+ *   <li><b>alias</b>: The alias of the key used for signing.</li>
+ *   <li><b>storetype</b>: The type of keystore being used (e.g., `JKS`, `PKCS12`).</li>
+ *   <li><b>keystore</b>: The path to the keystore file.</li>
+ *   <li><b>storepass</b>: The password for the keystore.</li>
+ *   <li><b>keypass</b>: The password for the signing key.</li>
+ *   <li><b>verbose</b>: Enables detailed output for the signing process.</li>
+ *   <li><b>preservelastmodified</b>: Preserves the last modified timestamp of the original JAR file.</li>
+ * </ul>
+ *
+ * <h3>Notes</h3>
+ * <ul>
+ *   <li>If the destination directory does not exist, it is automatically created.</li>
+ *   <li>Only files in the source directory are processed; subdirectories are ignored.</li>
+ *   <li>Each signed JAR file retains the same name as the original JAR file.</li>
+ * </ul>
+ *
+ * <h3>Exceptions</h3>
+ * <ul>
+ *   <li><b>Exception</b>: May occur if signing fails due to missing keystore, incorrect passwords, or invalid JAR files.</li>
+ * </ul>
+ *
+ * <h3>Debugging Information</h3>
+ * <ul>
+ *   <li>File name, size, and absolute path of each processed JAR are printed.</li>
+ *   <li>Path to the signed JAR file in the destination directory is displayed.</li>
+ * </ul>
+ */
 void signJarsWithAnt(File libsFilePath, File destDir, String pkAlias, String keystoreFileName, String storePassword, String keyPassword, String keystoreType) {
     def libFiles = libsFilePath.listFiles()
     destDir.mkdirs()
@@ -91,10 +401,77 @@ void signJarsWithAnt(File libsFilePath, File destDir, String pkAlias, String key
         println("Signed JAR saved to: ${new File(destDir, file.name).absolutePath}")
     }
 }
-
-// Main task
+/**
+ * Gradle task to prepare signed JAR files for the IzPack installer.
+ *
+ * <p>This task is responsible for signing JAR files in the `libs` directory
+ * using the signing properties defined in the project's configuration.
+ * It ensures that the JAR files required by the IzPack installer are signed
+ * and placed in a dedicated directory. This task depends on the `withAllDependendiesJar`
+ * task to ensure the necessary JAR files are available.</p>
+ *
+ * <h3>Task Configuration</h3>
+ * <ul>
+ *   <li>The task resolves signing properties such as the key alias, keystore path,
+ *       passwords, and keystore type from the project properties.</li>
+ *   <li>If the signing properties are not provided, default placeholders are used,
+ *       and the task will fail with appropriate error messages if required inputs are missing.</li>
+ *   <li>The task verifies the existence of the keystore file and ensures that the `libs`
+ *       directory contains the required JAR files.</li>
+ *   <li>Signed JAR files are output to a `signed` directory under the build directory.</li>
+ *   <li>If signing is not enabled, the task logs a message and skips the signing step.</li>
+ * </ul>
+ *
+ * <h3>Execution Flow</h3>
+ * <ol>
+ *   <li>Depends on the `withAllDependendiesJar` task to generate the necessary JAR files.</li>
+ *   <li>Resolves signing properties: key alias, keystore file, and passwords.</li>
+ *   <li>Verifies the existence of the `libs` directory and identifies JAR files for signing.</li>
+ *   <li>Checks the availability of the keystore file.</li>
+ *   <li>Signs the JAR files using the `signJarsWithAnt` helper method.</li>
+ *   <li>Outputs signed JAR files to the `signed` directory.</li>
+ *   <li>Finalizes by invoking the `izPackCreateInstaller` task.</li>
+ * </ol>
+ *
+ * <h3>Properties</h3>
+ * The following properties can be defined in the project to configure this task:
+ * <ul>
+ *   <li><b>keyAlias</b>: The alias of the key used for signing (default: `missing-alias`).</li>
+ *   <li><b>storeFile</b>: Path to the keystore file (default: `missing-keystore.jks`).</li>
+ *   <li><b>storePassword</b>: Password for the keystore (default: `missing-store-password`).</li>
+ *   <li><b>keyPassword</b>: Password for the signing key (default: `missing-key-password`).</li>
+ *   <li><b>storeType</b>: Type of the keystore (default: `JKS`).</li>
+ *   <li><b>createIzPackInstaller</b>: Boolean flag to control whether the signing process is triggered.
+ *       <ul>
+ *           <li>This flag is defined in the `gradle.properties` file of the project.</li>
+ *           <li>Default value: `false`.</li>
+ *           <li>After triggering the signing process, set this flag back to `false` to prevent
+ *               always triggering the signing process, as it can take a significant amount of time.</li>
+ *       </ul>
+ *   </li>
+ * </ul>
+ *
+ * <h3>Notes</h3>
+ * <p>Set the flag `createIzPackInstaller` to `true` in the `gradle.properties` file if you do not have
+ * a release version to trigger the signing process. After the signing process is completed,
+ * it is recommended to set the flag back to `false` to avoid unnecessary delays in subsequent builds.</p>
+ * <ul>
+ *   <li>If no JAR files are found in the `libs` directory, the task will fail.</li>
+ *   <li>The task skips signing if `releaseVersion` or `createIzPackInstaller` is not enabled.</li>
+ *   <li>Debugging information, including resolved properties and file paths, is logged during execution.</li>
+ * </ul>
+ *
+ * <h3>Exceptions</h3>
+ * <ul>
+ *   <li><b>Exception</b>: Thrown if the required directories, files, or properties are missing.</li>
+ * </ul>
+ *
+ * <h3>Finalized Task</h3>
+ * This task finalizes by invoking the `izPackCreateInstaller` task to ensure the installer is created after signing.
+ */
 tasks.register("prepareIzpackInstallerJars", Jar) {
     // Ensure the `withAllDependendiesJar` task runs before this task
+    dependsOn build
     dependsOn withAllDependendiesJar
 
     if (releaseVersion || createIzPackInstaller) {
@@ -119,7 +496,7 @@ tasks.register("prepareIzpackInstallerJars", Jar) {
 
         // Ensure directories exist
         if (!libsFilePath.exists() || !libsFilePath.isDirectory()) {
-            throw new GradleException("The directory $libsFilePath does not exist or is not a directory. Ensure the `build` task generates the JARs.")
+            throw new Exception("The directory $libsFilePath does not exist or is not a directory. Ensure the `build` task generates the JARs.")
         }
 
         // Print debug information
@@ -132,7 +509,7 @@ tasks.register("prepareIzpackInstallerJars", Jar) {
         // Find JARs and sign them
         def libFiles = libsFilePath.listFiles().findAll { it.name.endsWith('.jar') }
         if (libFiles.isEmpty()) {
-            throw new GradleException("No JAR files found in $libsFilePath. Ensure the `build` task generates the JARs.")
+            throw new Exception("No JAR files found in $libsFilePath. Ensure the `build` task generates the JARs.")
         } else {
             // print libFiles
             libFiles.each { file ->
@@ -149,7 +526,7 @@ tasks.register("prepareIzpackInstallerJars", Jar) {
         println("Keystore file path: $keystoreFilePath")
         def keystoreFile = file(keystoreFilePath)
         if (!keystoreFile.exists()) {
-            throw new GradleException("Keystore file not found: $keystoreFileName")
+            throw new Exception("Keystore file not found: $keystoreFileName")
         } else {
             println("Keystore file exists: $keystoreFile.name")
         }
