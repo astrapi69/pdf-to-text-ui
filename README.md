@@ -13,13 +13,13 @@
 ---
 ## 🧩 Overview
 
-**PDF-to-Text UI** is a lightweight, cross-platform **desktop tool** for extracting **plain text from PDF files**,  
-built with **Java Swing** and **Apache PDFBox**.  
-It can handle single documents or entire folders in batch mode  
+**PDF-to-Text UI** is a lightweight, cross-platform **desktop tool** for extracting **plain text from PDF files**,
+built with **Java Swing** and **Apache PDFBox**.
+It can handle single documents or entire folders in batch mode
 completely **offline**, with no cloud upload.
 
-> ⚠️ Before running the application, make sure **Tesseract OCR** and **Poppler (pdftoppm)** are installed  
-> if you plan to convert scanned image-based PDFs.  
+> ⚠️ Before running the application, make sure **Tesseract OCR** and **Poppler (pdftoppm)** are installed
+> if you plan to convert scanned image-based PDFs.
 > See the [**Prerequisites**](https://github.com/astrapi69/pdf-to-text-ui/wiki/Prerequisites) page for detailed setup instructions (Linux & Windows).
 
 ---
@@ -40,7 +40,7 @@ completely **offline**, with no cloud upload.
 
 ### 1️⃣ Download
 
-👉 [**Get the latest release**](https://github.com/astrapi69/pdf-to-text-ui/releases/latest)  
+👉 [**Get the latest release**](https://github.com/astrapi69/pdf-to-text-ui/releases/latest)
 Download the `pdf-to-text-ui-<version>-all.jar` or `pdf-to-text-ui-<version>-installer.jar`  file.
 
 ### 2️⃣ Run the app
