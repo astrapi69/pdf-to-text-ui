@@ -1,261 +1,162 @@
 <div style="text-align: center">
 
-[![Java CI with Gradle](https://github.com/astrapi69/pdf-to-text-ui/actions/workflows/gradle.yml/badge.svg)](https://github.com/astrapi69/pdf-to-text-ui/actions/workflows/gradle.yml)
-[![Coverage Status](https://codecov.io/gh/astrapi69/pdf-to-text-ui/branch/develop/graph/badge.svg)](https://codecov.io/gh/astrapi69/pdf-to-text-ui)
-[![Open Issues](https://img.shields.io/github/issues/astrapi69/pdf-to-text-ui.svg?style=flat)](https://github.com/astrapi69/pdf-to-text-ui/issues)
-[![Maven Central](https://maven-badges.herokuapp.com/maven-central/io.github.astrapi69/pdf-to-text-ui/badge.svg)](https://maven-badges.herokuapp.com/maven-central/io.github.astrapi69/pdf-to-text-ui)
-[![Javadocs](http://www.javadoc.io/badge/io.github.astrapi69/pdf-to-text-ui.svg)](http://www.javadoc.io/doc/io.github.astrapi69/pdf-to-text-ui)
-[![MIT License](http://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat)](http://opensource.org/licenses/MIT)
+# 📄 PDF-to-Text UI
+
+[![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
+[![Release](https://img.shields.io/github/v/release/astrapi69/pdf-to-text-ui?color=brightgreen)](https://github.com/astrapi69/pdf-to-text-ui/releases)
+[![Java](https://img.shields.io/badge/Java-21+-orange.svg)](https://adoptium.net)
 [![Donate](https://img.shields.io/badge/donate-❤-ff2244.svg)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=GVBTWLRAZ7HB8)
-[![Hits Of Code](https://hitsofcode.com/github/astrapi69/pdf-to-text-ui?branch=develop)](https://hitsofcode.com/github/astrapi69/pdf-to-text-ui/view?branch=develop)
+[![Hits of Code](https://hitsofcode.com/github/astrapi69/pdf-to-text-ui?branch=develop)](https://hitsofcode.com/github/astrapi69/pdf-to-text-ui/view?branch=develop)
 
 </div>
 
-Template project for create java swing ui projects with izpack installer. A small documentation how to use this
-template project in in the [wiki](https://github.com/astrapi69/pdf-to-text-ui/wiki)
+---
+## 🧩 Overview
 
-**❗ Before running the application, make sure Tesseract OCR and Poppler (`pdftoppm`) are installed on your system.**  
-See the **[Prerequisites](https://github.com/astrapi69/pdf-to-text-ui/wiki/Prerequisites)** wiki page for step-by-step
-installation instructions for **Linux** and **Windows**.
+**PDF-to-Text UI** is a lightweight, cross-platform **desktop tool** for extracting **plain text from PDF files**,  
+built with **Java Swing** and **Apache PDFBox**.  
+It can handle single documents or entire folders in batch mode  
+completely **offline**, with no cloud upload.
 
-> Please support this project by simply putting a
-> Github <a class="github-button" href="https://github.com/astrapi69/pdf-to-text-ui" data-icon="octicon-star" aria-label="Star astrapi69/pdf-to-text-ui on GitHub">
-> Star ⭐</a>
->
-> Share this library with friends on Twitter and everywhere else you can
->
-> If you love this project
-> [![Donation](https://img.shields.io/badge/donate-❤-ff2244.svg)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=GVBTWLRAZ7HB8)
+> ⚠️ Before running the application, make sure **Tesseract OCR** and **Poppler (pdftoppm)** are installed  
+> if you plan to convert scanned image-based PDFs.  
+> See the [**Prerequisites**](https://github.com/astrapi69/pdf-to-text-ui/wiki/Prerequisites) page for detailed setup instructions (Linux & Windows).
 
-## Note
+---
 
-No animals were harmed in the making of this library.
+## 🚀 Features
 
-## License
+- 🖥️ Simple and intuitive **Swing interface**
+- 📂 Convert **single files or entire folders**
+- ⚙️ Powered by **Apache PDFBox** (no external dependencies)
+- 🧾 **Batch processing** with progress indicator
+- 🌍 Full **Unicode** and multi-language support
+- 💾 Save all extracted text files in the chosen output folder
+- 🔒 **100 % offline** – no cloud upload or telemetry
 
-The source code comes under the liberal MIT License, making pdf-to-text-ui great for all types of applications.
+---
 
-## Import dependencies to your project
+## 📦 Installation & Usage
 
-<details>
-  <summary>gradle (click to expand)</summary>
+### 1️⃣ Download
 
-## gradle dependency
+👉 [**Get the latest release**](https://github.com/astrapi69/pdf-to-text-ui/releases/latest)  
+Download the `pdf-to-text-ui-<version>-all.jar` or `pdf-to-text-ui-<version>-installer.jar`  file.
 
-Replace the variable ${latestVersion} with the current latest
-version: [![Maven Central](https://maven-badges.herokuapp.com/maven-central/io.github.astrapi69/pdf-to-text-ui/badge.svg)](https://maven-badges.herokuapp.com/maven-central/io.github.astrapi69/pdf-to-text-ui)
+### 2️⃣ Run the app
 
-You can first define the version in the ext section and add than the following gradle dependency to
-your project `build.gradle` if you want to import the core functionality of pdf-to-text-ui:
-
-define version in file gradle.properties
-
-```
-pdfToTextUiVersion=${latestVersion}
+```bash
+java -jar pdf-to-text-ui-<version>-all.jar
 ```
 
-or in build.gradle ext area
+or simply double-click the JAR file.
 
-```
-    pdfToTextUiVersion = "${latestVersion}"
-```
+> Requires **Java 21 or newer** (recommended: [Adoptium Temurin](https://adoptium.net)).
 
-then add the dependency to the dependencies area
+---
 
-```
-    implementation("io.github.astrapi69:pdf-to-text-ui:$pdfToTextUiVersion")
-```
+## 🧭 Typical Workflow
 
-# with new libs.versions.toml file
+1. Launch the app
+2. Select a PDF file or directory
+3. Choose an output folder
+4. Click **Convert**
+5. Find the resulting `.txt` files in your target directory
 
-If you use the new libs.versions.toml file for new automatic catalog versions update
+---
 
-```
-[versions]
-pdf-to-text-ui-version=${latestVersion}
+## 🧩 Build from Source
 
-[libraries]
-pdf-to-text-ui = { module = "io.github.astrapi69:pdf-to-text-ui", version.ref = "pdf-to-text-ui-version" }
-```
-
-then add the dependency to the dependencies area
-
-```
-    implementation libs.pdf.to.text.ui
+```bash
+git clone https://github.com/astrapi69/pdf-to-text-ui.git
+cd pdf-to-text-ui
+./gradlew run
 ```
 
-</details>
+**Create a fat JAR:**
 
-<details>
-  <summary>Maven (click to expand)</summary>
-
-## Maven dependency
-
-Maven dependency is now on sonatype.
-Check
-out [sonatype repository](https://oss.sonatype.org/index.html#nexus-search;gav~io.github.astrapi69~pdf-to-text-ui~~~)
-for latest snapshots and releases.
-
-Add the following maven dependency to your project `pom.xml` if you want to import the core
-functionality of pdf-to-text-ui:
-
-Then you can add the dependency to your dependencies:
-
-    <properties>
-        ...
-
-```xml
-        <!-- pdf-to-text-ui version -->
-<pdf-to-text-ui.version>${latestVersion}</pdf-to-text-ui.version>
+```bash
+./gradlew clean shadowJar
+# output: build/libs/pdf-to-text-ui-*-all.jar
 ```
 
-        ...
-    </properties>
-        ...
-        <dependencies>
-        ...
+Optional native packages:
 
-```xml
-            <!-- pdf-to-text-ui DEPENDENCY -->
-<dependency>
-    <groupId>io.github.astrapi69</groupId>
-    <artifactId>pdf-to-text-ui</artifactId>
-    <version>${pdf-to-text-ui.version}</version>
-</dependency>
+```bash
+./gradlew jpackage
 ```
 
-        ...
-        </dependencies>
+---
 
-</details>
+## 🧪 Run Tests
 
-
-<details>
-  <summary>Snapshots (click to expand)</summary>
-
-## 📸 Snapshots
-
-[![Snapshot](https://img.shields.io/badge/dynamic/xml?url=https://oss.sonatype.org/service/local/repositories/snapshots/content/io/github/astrapi69/pdf-to-text-ui/maven-metadata.xml&label=snapshot&color=red&query=.//versioning/latest)](https://oss.sonatype.org/content/repositories/snapshots/io/github/astrapi69/pdf-to-text-ui/)
-
-This section describes how to import snapshot versions into your project.
-Add the following code snippet to your gradle file in the repositories section:
-
-```
-repositories {
-   //...
+```bash
+./gradlew test
 ```
 
-```groovy
-    maven {
-    name "Sonatype Nexus Snapshots"
-    url "https://oss.sonatype.org/content/repositories/snapshots"
-    mavenContent {
-        snapshotsOnly()
-    }
-}
-```
+---
 
-```
-}
-```
+## 🧱 Architecture Overview
 
-</details>
+| Module                        | Description                               |
+| :---------------------------- | :---------------------------------------- |
+| `pdf-to-text-core`            | Core logic – text extraction using PDFBox |
+| `pdf-to-text-ui`              | Swing desktop interface                   |
+| *(planned)* `pdf-to-text-cli` | Command-line batch tool                   |
 
-# Donations
+---
 
-This project is kept as an open source product and relies on contributions to remain being
-developed. If you like this library, please consider a donation
+## 📘 Documentation & Wiki
 
-over paypal:
-<br>
-<br>
-<a href="https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=MJ7V43GU2H386" target="_blank">
-<img src="https://www.paypalobjects.com/en_US/GB/i/btn/btn_donateCC_LG.gif"
-alt="PayPal this"
-title="PayPal – The safer, easier way to pay online!"
-style="border: none" />
-</a>
-<br>
-<br>
-or over bitcoin(BTC) with this address:
+Visit the [**Wiki**](https://github.com/astrapi69/pdf-to-text-ui/wiki) for detailed information.
 
-bc1ql2y99q7e8psndhcc3gferk03esw3qqf677rhjy
+---
 
-<img
-src="https://github.com/astrapi69/jgeohash/blob/master/src/main/resources/img/bc1ql2y99q7e8psndhcc3gferk03esw3qqf677rhjy.png"
-alt="Donation Bitcoin Wallet" width="250"/>
+## 🗺️ Roadmap
 
-or over FIO with this address:
+* [ ] CLI mode for headless batch processing
+* [ ] Optional OCR (Tesseract/Tess4J integration)
+* [ ] Progress bar & cancel operation
+* [ ] Multi-language UI (English / German)
+* [ ] Native installers (.deb, .msi, .dmg)
 
-FIO7tFMUVAA9cHiPPqKMfMXiSxHrbpiFyRYqTketNuM67aULuwjop
+See progress in the [**project board**](https://github.com/astrapi69/pdf-to-text-ui/projects).
 
-<img
-src="https://github.com/astrapi69/jgeohash/blob/master/src/main/resources/img/FIO7tFMUVAA9cHiPPqKMfMXiSxHrbpiFyRYqTketNuM67aULuwjop.png"
-alt="Donation FIO Wallet" width="250"/>
+---
 
-or over Ethereum(ETH) with:
+## 📜 License
 
-0xc057D159D3C8f3311E73568b334FF6fE82EB2b7D
+Licensed under the [MIT License](LICENSE).
+Includes components from **Apache PDFBox** (Apache License 2.0).
 
-<img
-src="https://github.com/astrapi69/jgeohash/blob/master/src/main/resources/img/0xc057D159D3C8f3311E73568b334FF6fE82EB2b7D.png"
-alt="Donation Ethereum Wallet" width="250"/>
+---
 
-or over Ethereum Classic(ETC) with:
+## 💖 Donations & Support
 
-0xF708cA86D86C246B69c3F4BAe431eBbe0c2bfddD
+This project is open source and maintained in personal time.
+If you find it useful, please consider supporting the development:
 
-<img
-src="https://github.com/astrapi69/jgeohash/blob/master/src/main/resources/img/0xF708cA86D86C246B69c3F4BAe431eBbe0c2bfddD.png"
-alt="Donation Ethereum Classic Wallet" width="250"/>
+[![Donate](https://img.shields.io/badge/donate-❤-ff2244.svg)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=MJ7V43GU2H386)
 
-or over Dogecoin(DOGE) with:
+---
 
-D5yi4Um8cpakd6yPRm2hGWuQ5nrVzhSSW1
+## 🧮 Versioning
 
-<img
-src="https://github.com/astrapi69/jgeohash/blob/master/src/main/resources/img/D5yi4Um8cpakd6yPRm2hGWuQ5nrVzhSSW1.png"
-alt="Donation Dogecoin Wallet" width="250"/>
+Follows **[Semantic Versioning](https://semver.org)**: `<major>.<minor>.<patch>`
+Detailed guidelines are available in the [mvn-parent-projects wiki](https://github.com/lightblueseas/mvn-parent-projects/wiki/Semantic-Versioning).
 
-or over Monero(XMR) with:
+---
 
-49bqeRQ7Bf49oJFVC72pqpe5hFbb62pfXDYPdLsadGGF81KZW2ZfrPZ8PbAVu5X2v1TYAspeczMya3cYQysNS4usRRPQHVw
+## 📫 Contact / Contribute
 
-<img
-src="https://github.com/astrapi69/jgeohash/blob/master/src/main/resources/img/49bqeRQ7Bf49oJFVC72pqpe5hFbb62pfXDYPdLsadGGF81KZW2ZfrPZ8PbAVu5X2v1TYAspeczMya3cYQysNS4usRRPQHVw.png"
-alt="Donation Monero Wallet" width="250"/>
+* Feature requests & bug reports → [GitHub Issues](https://github.com/astrapi69/pdf-to-text-ui/issues)
+* Fork → [Create a PR](https://github.com/astrapi69/pdf-to-text-ui/fork)
+* Please add unit tests for any code changes.
 
-or over the donation buttons at the top.
+---
 
-## Semantic Versioning
+## 🐾 Note
 
-The versions of pdf-to-text-ui are maintained with the Semantic Versioning guidelines.
+No animals were harmed in the making of this software.
 
-Release version numbers will be incremented in the following format:
-
-`<major>.<minor>.<patch>`
-
-For detailed information on versioning you can visit
-the [wiki page](https://github.com/lightblueseas/mvn-parent-projects/wiki/Semantic-Versioning).
-
-## What can i do to support this project
-
-You can donate or contribute solve issues or pull request. Every support are welcome.
-
-## Want to Help and improve it? ###
-
-The source code for pdf-to-text-ui are on GitHub. Please feel free to fork and send pull requests!
-
-Create your own fork of [astrapi69/pdf-to-text-ui/fork](https://github.com/astrapi69/pdf-to-text-ui/fork)
-
-To share your changes, [submit a pull request](https://github.com/astrapi69/pdf-to-text-ui/pull/new/develop).
-
-Don't forget to add new units tests on your changes.
-
-## Contacting the Developers
-
-Do not hesitate to contact the pdf-to-text-ui developers with your questions, concerns, comments, bug reports, or
-feature requests.
-
-- Feature requests, questions and bug reports can be reported at
-  the [issues page](https://github.com/astrapi69/pdf-to-text-ui/issues).
+---
