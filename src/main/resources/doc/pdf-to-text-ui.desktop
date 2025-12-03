@@ -3,7 +3,7 @@ Type=Application
 Name=PDF to Text UI
 GenericName=PDF-to-Text-Converter-Tool
 Comment=application that provides conversion from pdf to text
-Exec=java --add-opens java.base/java.time=ALL-UNNAMED -jar ~/apps/pdf-to-text-ui/pdf-to-text-ui.jar
-Icon=~/apps/pdf-to-text-ui/img/icon.png
+Exec=java --add-opens java.base/java.time=ALL-UNNAMED -jar ~/app/pdf-to-text-ui/pdf-to-text-ui.jar
+Icon=~/app/pdf-to-text-ui/img/icon.png
 Terminal=false
 Categories=Utility;
